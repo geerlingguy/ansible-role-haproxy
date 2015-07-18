@@ -1,0 +1,22 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: geerlingguy
+  description: HAProxy installation and configuration.
+  company: "Midwestern Mac, LLC"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 1.4
+  platforms:
+  - name: EL
+    versions:
+      - 6
+      - 7
+  - name: Ubuntu
+    versions:
+      - precise
+      - trusty
+  categories:
+    - web
+    - networking
+    - cloud
