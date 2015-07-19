@@ -1,9 +1,11 @@
 global
   log /dev/log  local0
   log /dev/log  local1 notice
-  chroot /var/lib/haproxy
-  user haproxy
-  group haproxy
+{% if haproxy_chroot != '' %}
+  chroot {{ haproxy_chroot }}
+{% endif %}
+  user {{ haproxy_user }}
+  group {{ haproxy_group }}
   daemon
 
 defaults
