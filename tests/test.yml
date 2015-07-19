@@ -3,7 +3,7 @@
   remote_user: root
 
   vars:
-    haproxy_backend_servers: []
+    haproxy_backend_servers:
       - name: app1
         address: 127.0.0.1:8080
 
