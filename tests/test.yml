@@ -3,6 +3,8 @@
   remote_user: root
 
   vars:
+    # Sockets and chroot aren't easy to use in Travis environments.
+    haproxy_socket: ''
     haproxy_chroot: ''
     haproxy_user: root
     haproxy_group: root
