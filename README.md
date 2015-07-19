@@ -14,6 +14,10 @@ None.
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
+    haproxy_socket: /var/lib/haproxy/stats
+
+The socket through which HAProxy can communicate (for admin purposes or statistics). To disable/remove this directive, set `haproxy_socket: ''` (an empty string).
+
     haproxy_chroot: /var/lib/haproxy
 
 The jail directory where chroot() will be performed before dropping privileges. To disable/remove this directive, set `haproxy_chroot: ''` (an empty string). Only change this if you know what you're doing!
