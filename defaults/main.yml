@@ -13,6 +13,7 @@ haproxy_frontends:
         ssl: false
         pem_local: '/etc/ansible/host_files/haproxy/haproxy.pem'
         pem_proxy: '/etc/ssl/certs/haproxy.pem'
+    ssl_redirect: false
     mode: 'http'
     backend_name: 'habackend'
 

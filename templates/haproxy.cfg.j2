@@ -44,6 +44,9 @@ frontend {{ haproxy_frontend.name }}
     bind {{ bind.address }}:{{ bind.port }}
 {% endif %}
 {% endfor %}
+{% if haproxy_frontend.ssl_redirect | default(false) %}
+    redirect scheme https if !{ ssl_fc }
+{% endif %}
     mode {{ haproxy_frontend.mode }}
     default_backend {{ haproxy_frontend.backend_name }}
 {% endfor %}
