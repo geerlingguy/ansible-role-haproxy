@@ -37,7 +37,9 @@ defaults
 
 {% for haproxy_frontend in haproxy_frontends %}
 frontend {{ haproxy_frontend.name }}
-    bind {{ haproxy_frontend.bind_address }}:{{ haproxy_frontend.port }}
+{% for bind in haproxy_frontend.bind %}
+    bind {{ bind.address }}:{{ bind.port }}
+{% endfor %}
     mode {{ haproxy_frontend.mode }}
     default_backend {{ haproxy_frontend.backend_name }}
 {% endfor %}
