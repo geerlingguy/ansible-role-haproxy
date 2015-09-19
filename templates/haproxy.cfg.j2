@@ -47,6 +47,11 @@ frontend {{ haproxy_frontend.name }}
 {% if haproxy_frontend.ssl_redirect | default(false) %}
     redirect scheme https if !{ ssl_fc }
 {% endif %}
+{% if haproxy_frontend.option is defined %}
+{% for option in haproxy_frontend.option %}
+    option {{ option }}
+{% endfor %}
+{% endif %}
     mode {{ haproxy_frontend.mode }}
     default_backend {{ haproxy_frontend.backend_name }}
 {% endfor %}
@@ -55,10 +60,15 @@ frontend {{ haproxy_frontend.name }}
 backend {{ haproxy_backend.name }}
     mode {{ haproxy_backend.mode }}
     balance {{ haproxy_backend.balance_method }}
-    option forwardfor
-    option httpchk {{ haproxy_backend.httpchk }}
+{% if haproxy_backend.option is defined %}
+{% for option in haproxy_backend.option %}
+    option {{ option }}
+{% endfor %}
+{% endif %}
+{% if haproxy_backend.cookie | default(false) %}
     cookie SERVERID insert indirect
+{% endif %}
 {% for server in haproxy_backend.servers %}
-    server {{ server.name }} {{ server.address }} cookie {{ server.name }} check
+    server {{ server.name }} {{ server.address }} {{ server.options }}
 {% endfor %}
 {% endfor %}
