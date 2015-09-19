@@ -27,27 +27,57 @@ The jail directory where chroot() will be performed before dropping privileges. 
 
 The user and group under which HAProxy should run. Only change this if you know what you're doing!
 
-    haproxy_frontend_name: 'hafrontend'
-    haproxy_frontend_bind_address: '*'
-    haproxy_frontend_port: 80
-    haproxy_frontend_mode: 'http'
+    haproxy_frontends: 
+      - name: 'first_frontend'
+        bind:
+          - address: '*'
+            port: 80
+          - address: '*'
+            port: 443
+            ssl: true
+            pem_local: '/etc/ansible/host_files/frist/first.pem'
+            pem_proxy: '/etc/ssl/certs/first.pem'
+        ssl_redirect: true
+        mode: 'http'
+        backend_name: 'first_backend'
+      - name: 'second_frontend'
+        bind:
+          - address: '*'
+            port: 2222
+        mode: 'tcp'
+        option:
+          - 'tcplog clf'
+        backend_name: 'second_backend'
+    
 
 HAProxy frontend configuration directives.
 
-    haproxy_backend_name: 'habackend'
-    haproxy_backend_mode: 'http'
-    haproxy_backend_balance_method: 'roundrobin'
-    haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
+    haproxy_backends:
+      - name: 'first_backend'
+        mode: 'http'
+        balance_method: 'roundrobin'
+        option:
+          - 'forwardfor'
+          - 'httpchk HEAD / HTTP/1.1\r\nHost:localhost'
+        cookie: true
+        servers:
+          - name: app1
+            address: 192.168.0.1:8080
+            options: 'cookie app1 check'
+          - name: app2
+            address: 192.168.0.2:8080
+            options: 'cookie app2 check'
+      - name: 'second_backend'
+        mode: 'tcp'
+        balance_method: 'static-rr'
+        option:
+          - 'tcplog'
+        servers:
+          - name: ssh1
+            address: 192.168.0.3:22
+            options: 'check port 22 inter 12000'
 
 HAProxy backend configuration directives.
-
-    haproxy_backend_servers:
-      - name: app1
-        address: 192.168.0.1:80
-      - name: app2
-        address: 192.168.0.2:80
-
-A list of backend servers (name and address) to which HAProxy will distribute requests.
 
 ## Dependencies
 
