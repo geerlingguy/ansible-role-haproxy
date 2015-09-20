@@ -5,20 +5,34 @@ haproxy_user: haproxy
 haproxy_group: haproxy
 
 # Frontend settings.
-haproxy_frontend_name: 'hafrontend'
-haproxy_frontend_bind_address: '*'
-haproxy_frontend_port: 80
-haproxy_frontend_mode: 'http'
+haproxy_frontends:
+  - name: 'hafrontend'
+    bind:
+      - address: '*'
+        port: 80
+        ssl: false
+        pem_local: '/etc/ansible/host_files/haproxy/haproxy.pem'
+        pem_proxy: '/etc/ssl/certs/haproxy.pem'
+    ssl_redirect: false
+    option: []
+    # - value: ''
+    mode: 'http'
+    backend_name: 'habackend'
 
 # Backend settings.
-haproxy_backend_name: 'habackend'
-haproxy_backend_mode: 'http'
-haproxy_backend_balance_method: 'roundrobin'
-haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
-
-# List of backend servers.
-haproxy_backend_servers: []
-  # - name: app1
-  #   address: 192.168.0.1:80
-  # - name: app2
-  #   address: 192.168.0.2:80
+haproxy_backends:
+  - name: 'habackend'
+    mode: 'http'
+    balance_method: 'roundrobin'
+    option:
+      - 'forwardfor'
+      - 'httpchk HEAD / HTTP/1.1\r\nHost:localhost'
+    cookie: true
+    # List of backend servers.
+    servers: []
+    # - name: app1
+    #   address: 192.168.0.1:80
+    #   options: 'cookie app1 check'
+    # - name: app2
+    #   address: 192.168.0.2:80
+    #   options: 'cookie app2 check'

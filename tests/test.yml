@@ -9,9 +9,26 @@
     haproxy_user: root
     haproxy_group: root
 
-    haproxy_backend_servers:
-      - name: app1
-        address: 127.0.0.1:8080
+    haproxy_frontends:
+      - name: 'frontend'
+        bind:
+          - address: '*'
+            port: 80
+        mode: 'http'
+        backend_name: 'backend'
 
+    haproxy_backends:
+      - name: 'backend'
+        mode: 'http'
+        balance_method: 'roundrobin'
+        option:
+          - 'forwardfor'
+          - 'httpchk HEAD / HTTP/1.1\r\nHost:localhost'
+        cookie: true
+        servers:
+          - name: app1
+            address: 127.0.0.1:8080
+            options: 'cookie app1 check'
+          
   roles:
     - ansible-role-haproxy
