@@ -1,1 +1,1 @@
-localhost
+localhost ansible_ssh_user=vagrant ansible_ssh_port=2222 ansible_ssh_pass=vagrant

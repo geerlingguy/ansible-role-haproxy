@@ -5,20 +5,26 @@ haproxy_user: haproxy
 haproxy_group: haproxy
 
 # Frontend settings.
-haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
-haproxy_frontend_port: 80
 haproxy_frontend_mode: 'http'
 
 # Backend settings.
-haproxy_backend_name: 'habackend'
 haproxy_backend_mode: 'http'
 haproxy_backend_balance_method: 'roundrobin'
 haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
 
+haproxy_frontend_options: []
+haproxy_backend_options: []
+
 # List of backend servers.
-haproxy_backend_servers: []
-  # - name: app1
-  #   address: 192.168.0.1:80
-  # - name: app2
-  #   address: 192.168.0.2:80
+ha_http_configs: []
+#- name: Foo
+#  frontend_mode: http
+#  frontend_bind_address: 127.0.0.1
+#  port: 8080
+#  backend_mode: http
+#  balance_method: roundrobin
+#  httpCheck: GET "/check"
+#  backends:
+#    - 10.10.10.10
+#    - 9.9.9.9
