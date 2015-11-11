@@ -12,40 +12,68 @@ global
   daemon
 
 defaults
-  log global
-  mode  http
-  option  httplog
-  option  dontlognull
+    log global
+    mode  http
+{% if haproxy_config is defined and haproxy_config.defaults is defined and haproxy_config.defaults.options is defined %}
+{% for value in haproxy_config.defaults.options %}
+    option {{ value }}
+{% endfor %}
+{% endif %}
+    option  httplog
+    option  dontlognull
 {% if haproxy_version == '1.4' %}
-        contimeout 5000
-        clitimeout 50000
-        srvtimeout 50000
+    contimeout 5000
+    clitimeout 50000
+    srvtimeout 50000
 {% else %}
-        timeout connect 5000
-        timeout client 50000
-        timeout server 50000
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
 {% endif %}
 {% if ansible_os_family == 'Debian' %}
-  errorfile 400 /etc/haproxy/errors/400.http
-  errorfile 403 /etc/haproxy/errors/403.http
-  errorfile 408 /etc/haproxy/errors/408.http
-  errorfile 500 /etc/haproxy/errors/500.http
-  errorfile 502 /etc/haproxy/errors/502.http
-  errorfile 503 /etc/haproxy/errors/503.http
-  errorfile 504 /etc/haproxy/errors/504.http
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
-frontend {{ haproxy_frontend_name }}
-    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
-    mode {{ haproxy_frontend_mode }}
-    default_backend {{ haproxy_backend_name }}
 
-backend {{ haproxy_backend_name }}
-    mode {{ haproxy_backend_mode }}
-    balance {{ haproxy_backend_balance_method }}
-    option forwardfor
-    option httpchk {{ haproxy_backend_httpchk }}
-    cookie SERVERID insert indirect
-{% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
+{% if haproxy_config is defined and haproxy_config.servers is defined %}
+{% for haconfig in haproxy_config.servers %}
+
+frontend {{ haconfig.name }}
+    mode {{ haconfig.frontend_mode | default(haproxy_frontend_mode) }}
+    bind {{ haconfig.frontend_bind_address | default(haproxy_frontend_bind_address)}}:{{ haconfig.port }}
+    default_backend {{ haconfig.name }}_backend
+    {% if haconfig.description is defined %}description: {{ haconfig.description }}{% endif %}
+{% if haconfig.frontend_options is defined %}
+{% for value in haconfig.frontend_options %}
+    option {{ value }}
 {% endfor %}
+{% endif %}
+
+backend {{ haconfig.name }}_backend
+    mode {{ haconfig.backend_mode | default(haproxy_backend_mode)}}
+    balance {{ haconfig.balance_method | default(haproxy_backend_balance_method) }}
+{% if haconfig.backend_options is defined %}
+{% for value in haconfig.backend_options %}
+    option {{ value }}
+{% endfor %}
+{% endif %}
+{% for backend_target in haconfig.backends %}
+    server {{ haconfig.name }}_backend_{{ loop.index }} {{ backend_target }} {% if haconfig.check | default(False) %} check {% endif %}{{ haconfig.check_arguments | default("") }}
+{% endfor %}
+
+{% endfor %}
+
+{% if haproxy_config.stats is defined %}
+listen stats :{{ haproxy_config.stats.port | default(haproxy_stats_port) }}
+    stats enable
+    mode {{ haproxy_config.stats.mode | default(haproxy_stats_mode) }}
+    stats uri {{ haproxy_config.stats.uri | default(haproxy_stats_uri) }}
+    stats auth {{ haproxy_config.stats.auth_user | default(haproxy_stats_auth_user) }}:{{ haproxy_config.stats.auth_password | default(haproxy_stats_auth_password) }}
+{% endif %}
+{% endif %}
