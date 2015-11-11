@@ -31,7 +31,7 @@
 
 - name: Enable all ports in SELinux for HAProxy
   seboolean: name=haproxy_connect_any state=yes persistent=yes
-  when: sestatus.stdout == "enabled" and enable_all_ports == True and ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' and sestatus.stdout == "enabled" and enable_all_ports == True
 
 - name: Get HAProxy version.
   command: haproxy -v
