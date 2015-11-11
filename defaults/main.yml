@@ -4,6 +4,13 @@ haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
 
+haproxy_stats_enabled: True
+haproxy_stats_mode: http
+haproxy_stats_port: 1936
+haproxy_stats_auth_user: admin
+haproxy_stats_auth_password: admin
+haproxy_stats_uri: /
+
 # Frontend settings.
 haproxy_frontend_bind_address: '*'
 haproxy_frontend_mode: 'http'
@@ -16,15 +23,24 @@ haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
 haproxy_frontend_options: []
 haproxy_backend_options: []
 
-# List of backend servers.
-ha_http_configs: []
-#- name: Foo
-#  frontend_mode: http
-#  frontend_bind_address: 127.0.0.1
-#  port: 8080
-#  backend_mode: http
-#  balance_method: roundrobin
-#  httpCheck: GET "/check"
-#  backends:
-#    - 10.10.10.10
-#    - 9.9.9.9
+#haproxy_config:
+#  defaults.options:
+#    - EXAMPLE
+#  servers:
+#    - name: Foo
+#      frontend_mode: http
+#      frontend_bind_address: 127.0.0.1
+#      port: 8080
+#      description: A description
+#      frontend_options:
+#        - OPTION1
+#        - OPTION2
+#      backend_mode: http
+#      balance_method: roundrobin
+#      backend_options:
+#        - httpCheck GET "/check"
+#      backends:
+#        - 10.10.10.10
+#        - 9.9.9.9
+#      check: True
+#      check_arguments: fall 1 rise 1 inter 2s

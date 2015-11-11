@@ -41,7 +41,7 @@ defaults
 {% endif %}
 
 
-{% for haconfig in haproxy_config.server %}
+{% for haconfig in haproxy_config.servers %}
 
 frontend {{ haconfig.name }}
     mode {{ haconfig.frontend_mode | default(haproxy_frontend_mode) }}
@@ -63,7 +63,15 @@ backend {{ haconfig.name }}_backend
 {% endfor %}
 {% endif %}
 {% for backend_target in haconfig.backends %}
-    server {{ haconfig.name }}_backend_{{ loop.index }} {{ backend_target }} cookie {{ haconfig.name }}_backend_{{ loop.index }} {% if haconfig.check | default(False) %} check {{ endif }} {{ haconfig.check_arguments | default("") }}
+    server {{ haconfig.name }}_backend_{{ loop.index }} {{ backend_target }} {{ haconfig.name }}_backend_{{ loop.index }} {% if haconfig.check | default(False) %} check {% endif %} {{ haconfig.check_arguments | default("") }}
 {% endfor %}
 
 {% endfor %}
+
+{% if haproxy_config.stats is defined %}
+listen stats :{{ haproxy_config.stats.port | default(haproxy_stats_port) }}
+    stats enable
+    mode {{ haproxy_config.stats.mode | default(haproxy_stats_mode) }}
+    stats uri {{ haproxy_config.stats.uri | default(haproxy_stats_uri) }}
+    stats auth {{ haproxy_config.stats.auth_user | default(haproxy_stats_auth_user) }}::{{ haproxy_config.stats.auth_password | default(haproxy_stats_auth_password) }}
+{% endif %}
