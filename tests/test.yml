@@ -9,9 +9,12 @@
     haproxy_user: root
     haproxy_group: root
 
-    haproxy_backend_servers:
-      - name: app1
-        address: 127.0.0.1:8080
+    haproxy_config:
+      servers:
+        - name: App
+          port: 8080
+          backends:
+            - 127.0.0.1:8080
 
   roles:
     - ansible-role-haproxy
