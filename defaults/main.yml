@@ -10,6 +10,7 @@ haproxy_stats_port: 1936
 haproxy_stats_auth_user: admin
 haproxy_stats_auth_password: admin
 haproxy_stats_uri: /
+haproxy_selinux_enable_all_ports: False
 
 # Frontend settings.
 haproxy_frontend_bind_address: '*'

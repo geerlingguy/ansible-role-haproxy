@@ -14,7 +14,7 @@ global
 defaults
     log global
     mode  http
-{% if haproxy_config.defaults.options is defined %}
+{% if haproxy_config.defaults is defined and haproxy_config.defaults.options is defined %}
 {% for value in haproxy_config.defaults.options %}
     option {{ value }}
 {% endfor %}
@@ -47,7 +47,7 @@ frontend {{ haconfig.name }}
     mode {{ haconfig.frontend_mode | default(haproxy_frontend_mode) }}
     bind {{ haconfig.frontend_bind_address | default(haproxy_frontend_bind_address)}}:{{ haconfig.port }}
     default_backend {{ haconfig.name }}_backend
-    description: {{ description | default("") }}
+    {% if haconfig.description is defined %}description: {{ haconfig.description }}{% endif %}
 {% if haconfig.frontend_options is defined %}
 {% for value in haconfig.frontend_options %}
     option {{ value }}
@@ -63,7 +63,7 @@ backend {{ haconfig.name }}_backend
 {% endfor %}
 {% endif %}
 {% for backend_target in haconfig.backends %}
-    server {{ haconfig.name }}_backend_{{ loop.index }} {{ backend_target }} {{ haconfig.name }}_backend_{{ loop.index }} {% if haconfig.check | default(False) %} check {% endif %} {{ haconfig.check_arguments | default("") }}
+    server {{ haconfig.name }}_backend_{{ loop.index }} {{ backend_target }} {% if haconfig.check | default(False) %} check {% endif %}{{ haconfig.check_arguments | default("") }}
 {% endfor %}
 
 {% endfor %}
@@ -73,5 +73,5 @@ listen stats :{{ haproxy_config.stats.port | default(haproxy_stats_port) }}
     stats enable
     mode {{ haproxy_config.stats.mode | default(haproxy_stats_mode) }}
     stats uri {{ haproxy_config.stats.uri | default(haproxy_stats_uri) }}
-    stats auth {{ haproxy_config.stats.auth_user | default(haproxy_stats_auth_user) }}::{{ haproxy_config.stats.auth_password | default(haproxy_stats_auth_password) }}
+    stats auth {{ haproxy_config.stats.auth_user | default(haproxy_stats_auth_user) }}:{{ haproxy_config.stats.auth_password | default(haproxy_stats_auth_password) }}
 {% endif %}
