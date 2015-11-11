@@ -25,9 +25,13 @@
   yum: name=libsemanage-python state=latest
   when: ansible_os_family == 'RedHat'
 
+- name: Set value for SELinux switching
+  set_fact:
+    enable_all_ports: "{% if haproxy_config is defined %}{{ haproxy_config.enable_all_ports | default(haproxy_selinux_enable_all_ports) }}{% else %}{{ haproxy_selinux_enable_all_ports }}{% endif %}"
+
 - name: Enable all ports in SELinux for HAProxy
   seboolean: name=haproxy_connect_any state=yes persistent=yes
-  when: sestatus.stdout == "enabled" and {{ haproxy_config.enable_all_ports | default(haproxy_selinux_enable_all_ports) }} and ansible_os_family == 'RedHat'
+  when: sestatus.stdout == "enabled" and enable_all_ports == True and ansible_os_family == 'RedHat'
 
 - name: Get HAProxy version.
   command: haproxy -v

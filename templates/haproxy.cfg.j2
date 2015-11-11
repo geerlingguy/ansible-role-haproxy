@@ -14,7 +14,7 @@ global
 defaults
     log global
     mode  http
-{% if haproxy_config.defaults is defined and haproxy_config.defaults.options is defined %}
+{% if haproxy_config is defined and haproxy_config.defaults is defined and haproxy_config.defaults.options is defined %}
 {% for value in haproxy_config.defaults.options %}
     option {{ value }}
 {% endfor %}
@@ -41,6 +41,7 @@ defaults
 {% endif %}
 
 
+{% if haproxy_config is defined and haproxy_config.servers is defined %}
 {% for haconfig in haproxy_config.servers %}
 
 frontend {{ haconfig.name }}
@@ -74,4 +75,5 @@ listen stats :{{ haproxy_config.stats.port | default(haproxy_stats_port) }}
     mode {{ haproxy_config.stats.mode | default(haproxy_stats_mode) }}
     stats uri {{ haproxy_config.stats.uri | default(haproxy_stats_uri) }}
     stats auth {{ haproxy_config.stats.auth_user | default(haproxy_stats_auth_user) }}:{{ haproxy_config.stats.auth_password | default(haproxy_stats_auth_password) }}
+{% endif %}
 {% endif %}
