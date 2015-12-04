@@ -4,13 +4,15 @@ haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
 
-# Frontend settings.
+# Frontend HTTP settings.
 haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
 haproxy_frontend_port: 80
+haproxy_frontend_ssl_port: 443
 haproxy_frontend_mode: 'http'
+haproxy_ssl_pem: false
 
-# Backend settings.
+# Backend HTTP settings.
 haproxy_backend_name: 'habackend'
 haproxy_backend_mode: 'http'
 haproxy_backend_balance_method: 'roundrobin'
