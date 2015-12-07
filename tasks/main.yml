@@ -31,7 +31,7 @@
     dest: /etc/haproxy/server.pem
     mode: 0644
   notify: restart haproxy
-  when: haproxy_ssl_pem != false
+  when: haproxy_ssl_pem != ''
 
 - name: Copy HAProxy configuration in place.
   template:
