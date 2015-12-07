@@ -10,7 +10,7 @@ haproxy_frontend_bind_address: '*'
 haproxy_frontend_port: 80
 haproxy_frontend_ssl_port: 443
 haproxy_frontend_mode: 'http'
-haproxy_ssl_pem: false
+haproxy_ssl_pem: ''
 
 # Backend settings.
 haproxy_backend_name: 'habackend'
