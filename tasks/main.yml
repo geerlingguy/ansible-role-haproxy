@@ -15,6 +15,24 @@
   yum: name=haproxy state=installed
   when: ansible_os_family == 'RedHat'
 
+- name: Check SELinux State
+  shell: sestatus | grep "SELinux status" | awk '{print $3; }'
+  register: sestatus
+  ignore_errors: True
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure ibsemanage-python is installed (RedHat).
+  yum: name=libsemanage-python state=latest
+  when: ansible_os_family == 'RedHat'
+
+- name: Set value for SELinux switching
+  set_fact:
+    enable_all_ports: "{% if haproxy_config is defined %}{{ haproxy_config.enable_all_ports | default(haproxy_selinux_enable_all_ports) }}{% else %}{{ haproxy_selinux_enable_all_ports }}{% endif %}"
+
+- name: Enable all ports in SELinux for HAProxy
+  seboolean: name=haproxy_connect_any state=yes persistent=yes
+  when: ansible_os_family == 'RedHat' and sestatus.stdout == "enabled" and enable_all_ports == 'True'
+
 - name: Get HAProxy version.
   command: haproxy -v
   register: haproxy_version_result
@@ -34,3 +52,4 @@
 
 - name: Ensure HAProxy is started and enabled on boot.
   service: name=haproxy state=started enabled=yes
+
