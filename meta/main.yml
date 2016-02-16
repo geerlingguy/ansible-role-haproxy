@@ -6,7 +6,7 @@ galaxy_info:
   description: HAProxy installation and configuration.
   company: "Midwestern Mac, LLC"
   license: "license (BSD, MIT)"
-  min_ansible_version: 1.4
+  min_ansible_version: 1.8
   platforms:
   - name: EL
     versions:
@@ -16,7 +16,7 @@ galaxy_info:
     versions:
       - precise
       - trusty
-  categories:
+  galaxy_tags:
     - web
     - networking
     - cloud
