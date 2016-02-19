@@ -52,3 +52,8 @@ backend {{ haproxy_backend_name }}
 {% for backend in haproxy_backend_servers %}
     server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
 {% endfor %}
+{% if haproxy_backend_group and haproxy_backend_port %}
+{% for host in groups[haproxy_backend_group] %}
+    server {{ host }} {{ host }}:{{haproxy_backend_port}} cookie {{ host }} check
+{% endfor %}
+{% endif %}
