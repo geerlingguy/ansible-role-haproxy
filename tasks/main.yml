@@ -1,4 +1,8 @@
 ---
+- name: Ensure Debian Wheezy backport repository is added (to get HAProxy).
+  apt_repository: repo='deb http://ftp.debian.org/debian wheezy-backports main' state=present
+  when: ansible_distribution_release == 'wheezy'
+
 - name: Ensure HAProxy is installed (Debian).
   apt: name=haproxy state=installed
   when: ansible_os_family == 'Debian'
