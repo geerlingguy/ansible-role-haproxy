@@ -1,51 +1,67 @@
 global
-  log /dev/log  local0
-  log /dev/log  local1 notice
+	log	/dev/log	local0
+	log /dev/log	local1 notice
 {% if haproxy_socket != '' %}
-  stats socket {{ haproxy_socket }} level admin
+	stats socket {{ haproxy_socket }} mode 660 level admin
 {% endif %}
 {% if haproxy_chroot != '' %}
-  chroot {{ haproxy_chroot }}
+	chroot {{ haproxy_chroot }}
 {% endif %}
-  user {{ haproxy_user }}
-  group {{ haproxy_group }}
-  daemon
+	user {{ haproxy_user }}
+	group {{ haproxy_group }}
+	daemon
 
 defaults
-  log global
-  mode  http
-  option  httplog
-  option  dontlognull
+	log global
+	mode  http
+	option  httplog
+	option  dontlognull
 {% if haproxy_version == '1.4' %}
-        contimeout 5000
-        clitimeout 50000
-        srvtimeout 50000
+		contimeout 5000
+		clitimeout 50000
+		srvtimeout 50000
 {% else %}
-        timeout connect 5000
-        timeout client 50000
-        timeout server 50000
+		timeout connect 5000
+		timeout client 50000
+		timeout server 50000
 {% endif %}
 {% if ansible_os_family == 'Debian' %}
-  errorfile 400 /etc/haproxy/errors/400.http
-  errorfile 403 /etc/haproxy/errors/403.http
-  errorfile 408 /etc/haproxy/errors/408.http
-  errorfile 500 /etc/haproxy/errors/500.http
-  errorfile 502 /etc/haproxy/errors/502.http
-  errorfile 503 /etc/haproxy/errors/503.http
-  errorfile 504 /etc/haproxy/errors/504.http
+	errorfile 400 /etc/haproxy/errors/400.http
+	errorfile 403 /etc/haproxy/errors/403.http
+	errorfile 408 /etc/haproxy/errors/408.http
+	errorfile 500 /etc/haproxy/errors/500.http
+	errorfile 502 /etc/haproxy/errors/502.http
+	errorfile 503 /etc/haproxy/errors/503.http
+	errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
 frontend {{ haproxy_frontend_name }}
-    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
-    mode {{ haproxy_frontend_mode }}
-    default_backend {{ haproxy_backend_name }}
+	bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
+{% for acl in haproxy_frontend_acls %}
+	{{ acl }}
+{% endfor %}
+{% for acl_match in haproxy_frontend_acl_matches %}
+	{{ acl_match }}
+{% endfor %}
 
-backend {{ haproxy_backend_name }}
-    mode {{ haproxy_backend_mode }}
-    balance {{ haproxy_backend_balance_method }}
-    option forwardfor
-    option httpchk {{ haproxy_backend_httpchk }}
-    cookie SERVERID insert indirect
-{% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
+{% if haproxy_default_backend_name is defined %}
+	default_backend {{ haproxy_default_backend_name }}
+{% endif %}
+
+
+{% for backend in haproxy_backends %}
+backend {{ backend.name }}
+	mode {{ backend.mode }}
+{% if backend.balance_method is defined %}
+	balance {{ backend.balance_method }}
+{% endif %}
+	option forwardfor
+	cookie SERVERID insert indirect
+	{% if backend.httpchk is defined %}
+	option httpchk {{ backend.httpchk }}
+	{% endif %}
+{% for server in backend.servers %}
+	server {{ server.name }} {{ server.address }} cookie {{ server.name }} check
+{% endfor %}
+
 {% endfor %}
