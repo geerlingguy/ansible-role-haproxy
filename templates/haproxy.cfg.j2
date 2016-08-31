@@ -10,6 +10,11 @@ global
   user {{ haproxy_user }}
   group {{ haproxy_group }}
   daemon
+{% if haproxy_global_vars is defined %}
+{% for global_var in haproxy_global_vars %}
+  {{ global_var }}
+{% endfor %}
+{% endif %}
 
 defaults
   log global

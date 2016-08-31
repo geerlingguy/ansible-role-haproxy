@@ -49,6 +49,12 @@ HAProxy backend configuration directives.
 
 A list of backend servers (name and address) to which HAProxy will distribute requests.
 
+    haproxy_global_vars:
+      - 'ssl-default-bind-ciphers ABCD+KLMJ:...'
+      - 'ssl-default-bind-options no-sslv3'
+
+A list of extra global variables to add. One string per line in the resulted haproxy.cfg.
+ 
 ## Dependencies
 
 None.
