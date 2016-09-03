@@ -53,8 +53,8 @@ A list of backend servers (name and address) to which HAProxy will distribute re
       - 'ssl-default-bind-ciphers ABCD+KLMJ:...'
       - 'ssl-default-bind-options no-sslv3'
 
-A list of extra global variables to add. One string per line in the resulted haproxy.cfg.
- 
+A list of extra global variables to add to the global configuration section inside `haproxy.cfg`.
+
 ## Dependencies
 
 None.
@@ -72,4 +72,4 @@ MIT / BSD
 
 ## Author Information
 
-This role was created in 2015 by [Jeff Geerling](http://jeffgeerling.com/), author of [Ansible for DevOps](http://ansiblefordevops.com/).
+This role was created in 2015 by [Jeff Geerling](http://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
