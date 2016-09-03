@@ -1,9 +1,7 @@
 ---
-- hosts: localhost
-  remote_user: root
+- hosts: all
 
   vars:
-    # Sockets and chroot aren't easy to use in Travis environments.
     haproxy_socket: ''
     haproxy_chroot: ''
     haproxy_user: root
@@ -14,4 +12,4 @@
         address: 127.0.0.1:8080
 
   roles:
-    - ansible-role-haproxy
+    - role_under_test
