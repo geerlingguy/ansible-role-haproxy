@@ -23,5 +23,8 @@ script:
   # Make sure haproxy is installed.
   - 'docker exec --tty ${container_id} env TERM=xterm haproxy -v'
 
+  # Make sure stats page is available and accessible.
+  - 'docker exec --tty ${container_id} env TERM=xterm curl --user user:pass localhost:7777 | grep "Statistics Report"'
+
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

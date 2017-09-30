@@ -25,3 +25,11 @@ haproxy_backend_servers: []
 
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []
+
+# Statistics page
+haproxy_stats_enable: false
+haproxy_stats_port: 7777
+haproxy_stats_refresh: 30s
+haproxy_stats_username: ''
+haproxy_stats_password: ''
+haproxy_stats_uri: /

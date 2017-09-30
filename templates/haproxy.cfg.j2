@@ -54,3 +54,19 @@ backend {{ haproxy_backend_name }}
 {% for backend in haproxy_backend_servers %}
     server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
 {% endfor %}
+
+{% if haproxy_stats_enable %}
+listen stats
+    bind *:{{ haproxy_stats_port }}
+    mode http
+
+    stats enable
+    stats hide-version
+{% if haproxy_stats_refresh != '' %}
+    stats refresh {{ haproxy_stats_refresh }}
+{% endif %}
+{% if haproxy_stats_username != '' %}
+    stats auth {{ haproxy_stats_username }}:{{ haproxy_stats_password }}
+{% endif %}
+    stats uri {{ haproxy_stats_uri }}
+{% endif %}

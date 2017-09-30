@@ -6,6 +6,10 @@
     haproxy_chroot: ''
     haproxy_user: root
     haproxy_group: root
+    haproxy_stats_enable: true
+    haproxy_stats_username: 'user'
+    haproxy_stats_password: 'pass'
+
 
     haproxy_backend_servers:
       - name: app1
@@ -15,6 +19,9 @@
     - name: Update apt cache.
       apt: update_cache=yes cache_valid_time=600
       when: ansible_os_family == 'Debian'
+
+    - name: Install dependencies.
+      package: name=curl state=present
 
   roles:
     - role_under_test
