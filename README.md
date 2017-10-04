@@ -49,6 +49,15 @@ HAProxy backend configuration directives.
 
 A list of backend servers (name and address) to which HAProxy will distribute requests.
 
+    haproxy_stats_enable: false
+    haproxy_stats_port: 7777
+    haproxy_stats_refresh: 30s
+    haproxy_stats_username: ''
+    haproxy_stats_password: ''
+    haproxy_stats_uri: /
+
+HAProxy statistics page configuration directives.
+
     haproxy_global_vars:
       - 'ssl-default-bind-ciphers ABCD+KLMJ:...'
       - 'ssl-default-bind-options no-sslv3'
