@@ -46,9 +46,13 @@ frontend {{ haproxy_frontend_name }}
 backend {{ haproxy_backend_name }}
     mode {{ haproxy_backend_mode }}
     balance {{ haproxy_backend_balance_method }}
-    option forwardfor
 {% if haproxy_backend_healthchk != '' %}
     option {{ haproxy_backend_healthchk }}
+{% endif %}
+{% if haproxy_backend_options != '' %}
+{% for options in haproxy_backend_options %}
+    option {{ options }}
+{% endfor %}
 {% endif %}
     cookie SERVERID insert indirect
 {% for backend in haproxy_backend_servers %}
