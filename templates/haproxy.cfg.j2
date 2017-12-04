@@ -47,7 +47,7 @@ backend {{ haproxy_backend_name }}
     mode {{ haproxy_backend_mode }}
     balance {{ haproxy_backend_balance_method }}
     option forwardfor
-{% if haproxy_backend_httpchk != '' %}
+{% if haproxy_backend_healthchk != '' %}
     option {{ haproxy_backend_healthchk }}
 {% endif %}
     cookie SERVERID insert indirect
