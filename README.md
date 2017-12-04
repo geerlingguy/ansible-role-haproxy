@@ -31,6 +31,7 @@ The user and group under which HAProxy should run. Only change this if you know 
     haproxy_frontend_bind_address: '*'
     haproxy_frontend_port: 80
     haproxy_frontend_mode: 'http'
+    haproxy_frontend_options: []
 
 HAProxy frontend configuration directives.
 
