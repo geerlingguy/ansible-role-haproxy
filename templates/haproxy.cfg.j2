@@ -42,7 +42,7 @@ frontend {{ haproxy_frontend_name }}
     bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
     mode {{ haproxy_frontend_mode }}
     default_backend {{ haproxy_backend_name }}
-{% if haproxy_frontend_options != '' %}
+{% if haproxy_frontend_options | length > 1 %}
 {% for options in haproxy_frontend_options %}
     option {{ options }}
 {% endfor %}
@@ -51,7 +51,7 @@ frontend {{ haproxy_frontend_name }}
 backend {{ haproxy_backend_name }}
     mode {{ haproxy_backend_mode }}
     balance {{ haproxy_backend_balance_method }}
-{% if haproxy_backend_healthchk != '' %}
+{% if haproxy_backend_healthchk | length > 1 %}
     option {{ haproxy_backend_healthchk }}
 {% endif %}
 {% if haproxy_backend_options != '' %}
