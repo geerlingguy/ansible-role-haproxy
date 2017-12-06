@@ -35,3 +35,15 @@
 
 - name: Ensure HAProxy is started and enabled on boot.
   service: name=haproxy state=started enabled=yes
+
+- name: Add haproxy-stats script
+  copy:
+    content: |
+      {{ '#' }}!/bin/bash
+      watch 'echo "show stat" | nc -U /var/lib/haproxy/stats | \
+      cut -d "," -f 1,2,5-11,18,24,27,30,36,50,37,56,57,62 | column -s, -t'
+    dest: /usr/local/bin/haproxy-stats
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: no
