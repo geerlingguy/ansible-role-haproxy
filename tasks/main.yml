@@ -1,7 +1,6 @@
 ---
-- name: Ensure HAProxy is installed (Debian).
-  apt: name=haproxy state=installed
-  when: ansible_os_family == 'Debian'
+- name: Ensure HAProxy is installed.
+  package: name=haproxy state=present
 
 - name: Ensure HAProxy is enabled (so init script will start it on Debian).
   lineinfile:
@@ -10,10 +9,6 @@
     line: "ENABLED=1"
     state: present
   when: ansible_os_family == 'Debian'
-
-- name: Ensure HAProxy is installed (RedHat).
-  yum: name=haproxy state=installed
-  when: ansible_os_family == 'RedHat'
 
 - name: Get HAProxy version.
   command: haproxy -v
