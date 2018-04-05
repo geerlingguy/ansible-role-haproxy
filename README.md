@@ -55,6 +55,13 @@ A list of backend servers (name and address) to which HAProxy will distribute re
 
 A list of extra global variables to add to the global configuration section inside `haproxy.cfg`.
 
+A list of backend options. Full list available in [the official documentation](https://www.haproxy.org/download/1.4/doc/configuration.txt)
+
+    haproxy_options:
+        - "mysql-check"
+        # - http_proxy
+        # - redispatch
+
 ## Dependencies
 
 None.
