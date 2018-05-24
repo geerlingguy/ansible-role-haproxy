@@ -27,27 +27,27 @@ The jail directory where chroot() will be performed before dropping privileges. 
 
 The user and group under which HAProxy should run. Only change this if you know what you're doing!
 
-    haproxy_frontend_name: 'hafrontend'
-    haproxy_frontend_bind_address: '*'
-    haproxy_frontend_port: 80
-    haproxy_frontend_mode: 'http'
-
+    haproxy_frontend_servers: []
+      # - name: http-in
+      #   bind_address: "*"
+      #   port: "80"
+      #   extra_configs:
+      #     - "acl host_bacon hdr(host) -i ilovebacon.com"
+      #     - "use_backend bacon_cluster if host_bacon"
+    
 HAProxy frontend configuration directives.
 
-    haproxy_backend_name: 'habackend'
-    haproxy_backend_mode: 'http'
-    haproxy_backend_balance_method: 'roundrobin'
-    haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
+    haproxy_backend_servers: []
+      # - name: bacon_cluster
+      #   balance_method: leastconn
+      #   servers:
+      #     - name: node1
+      #       address: 10.0.0.1:8080
+      #   extra_configs:
+      #     - "option httpclose"
+      #     - "cookie JSESSIONID prefix"
 
 HAProxy backend configuration directives.
-
-    haproxy_backend_servers:
-      - name: app1
-        address: 192.168.0.1:80
-      - name: app2
-        address: 192.168.0.2:80
-
-A list of backend servers (name and address) to which HAProxy will distribute requests.
 
     haproxy_global_vars:
       - 'ssl-default-bind-ciphers ABCD+KLMJ:...'

@@ -7,9 +7,35 @@
     haproxy_user: root
     haproxy_group: root
 
-    haproxy_backend_servers:
-      - name: app1
-        address: 127.0.0.1:8080
+    haproxy_frontends:
+      - name: http-in
+        bind_address: "*"
+        port: "8080"
+        mode: roundrobin
+        extra_configs:
+          - "acl host_bacon hdr(host) -i ilovebacon.com"
+          - "acl host_milkshakes hdr(host) -i bobsmilkshakes.com"
+          - "use_backend bacon_cluster if host_bacon"
+          - "use_backend milshake_cluster if host_milkshakes"
+
+    haproxy_backends:
+      - name: bacon_cluster
+        balance_method: leastconn
+        servers:
+          - name: node1
+            address: 10.0.0.1:8080
+        extra_configs:
+          - "option httpclose"
+          - "cookie JSESSIONID prefix"
+
+      - name: milshake_cluster
+        balance_method: leastconn
+        servers:
+          - name: app1
+            address: 10.0.0.2:8080
+        extra_configs:
+          - "option httpclose"
+          - "cookie JSESSIONID prefix"
 
   pre_tasks:
     - name: Update apt cache.
