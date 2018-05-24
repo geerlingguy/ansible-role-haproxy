@@ -11,7 +11,7 @@
       - name: http-in
         bind_address: "*"
         port: "8080"
-        mode: roundrobin
+        mode: http
         extra_configs:
           - "acl host_bacon hdr(host) -i ilovebacon.com"
           - "acl host_milkshakes hdr(host) -i bobsmilkshakes.com"
