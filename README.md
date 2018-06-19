@@ -27,6 +27,10 @@ The jail directory where chroot() will be performed before dropping privileges. 
 
 The user and group under which HAProxy should run. Only change this if you know what you're doing!
 
+    haproxy_log_destination: /dev/log
+
+The destination to log to, you won't normally need to change this from it's default value.
+
     haproxy_frontend_servers: []
       # - name: http-in
       #   bind_address: "*"
