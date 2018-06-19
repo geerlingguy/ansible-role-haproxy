@@ -38,7 +38,7 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
-{% for haproxy_frontend in haproxy_frontends %}
+{% for haproxy_frontend in haproxy_frontend_servers %}
 frontend {{ haproxy_frontend.name }}
     bind {{ haproxy_frontend.bind_address }}:{{ haproxy_frontend.port }}
     mode {{ haproxy_frontend.mode|default("http") }}
@@ -47,7 +47,7 @@ frontend {{ haproxy_frontend.name }}
 {% endfor %}
 {% endfor %}
 
-{% for haproxy_backend in haproxy_backends %}
+{% for haproxy_backend in haproxy_backend_servers %}
 backend {{ haproxy_backend.name }}
     mode {{ haproxy_backend.mode|default("http") }}
     balance {{ haproxy_backend.balance_method }}
