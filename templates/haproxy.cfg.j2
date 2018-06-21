@@ -19,6 +19,9 @@ defaults
   mode  http
   option  httplog
   option  dontlognull
+{% for haproxy_default in haproxy_defaults %}
+  {{ haproxy_default }}
+{% endfor %}
 {% if haproxy_version == '1.4' %}
         contimeout 5000
         clitimeout 50000

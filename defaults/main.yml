@@ -6,6 +6,9 @@ haproxy_group: haproxy
 
 haproxy_log_destination: /dev/log
 
+haproxy_defaults: []
+  # - "option forwardfor"
+
 haproxy_frontend_servers: []
   # - name: http-in
   #   bind_address: "*"

@@ -31,6 +31,11 @@ The user and group under which HAProxy should run. Only change this if you know 
 
 The destination to log to, you won't normally need to change this from it's default value.
 
+    haproxy_defaults: []
+      # - "option forwardfor"
+      
+Any configuration that should be added to the "defaults" section.
+
     haproxy_frontend_servers: []
       # - name: http-in
       #   bind_address: "*"

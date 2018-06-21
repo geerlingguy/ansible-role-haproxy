@@ -7,6 +7,9 @@
     haproxy_user: root
     haproxy_group: root
 
+    haproxy_defaults:
+      - "option forwardfor"
+
     haproxy_frontend_servers:
       - name: http-in
         bind_address: "*"
