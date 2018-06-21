@@ -12,8 +12,7 @@
 
     haproxy_frontend_servers:
       - name: http-in
-        bind_address: "*"
-        port: "8080"
+        bind: "*:8080"
         mode: http
         extra_configs:
           - "acl host_bacon hdr(host) -i ilovebacon.com"
