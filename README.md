@@ -15,6 +15,7 @@ None.
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
     haproxy_socket: /var/lib/haproxy/stats
+    haproxy_socket_options: "level admin"
 
 The socket through which HAProxy can communicate (for admin purposes or statistics). To disable/remove this directive, set `haproxy_socket: ''` (an empty string).
 

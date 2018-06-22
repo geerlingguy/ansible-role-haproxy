@@ -1,5 +1,6 @@
 ---
 haproxy_socket: /var/lib/haproxy/stats
+haproxy_socket_options: "level admin"
 haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
