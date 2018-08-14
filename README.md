@@ -64,6 +64,10 @@ HAProxy backend configuration directives.
 
 A list of extra global variables to add to the global configuration section inside `haproxy.cfg`.
 
+    haproxy_service_reload_state: restarted
+    
+The state to ensure haproxy is in after a config change happens.
+
 ## Dependencies
 
 None.

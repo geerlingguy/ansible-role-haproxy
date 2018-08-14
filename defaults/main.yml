@@ -5,6 +5,8 @@ haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
 
+haproxy_service_reload_state: restarted
+
 haproxy_log_destination: /dev/log
 
 haproxy_defaults: []
