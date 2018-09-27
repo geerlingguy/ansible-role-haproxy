@@ -1,5 +1,7 @@
 ---
-- hosts: all
+- name: Converge
+  hosts: all
+  become: true
 
   vars:
     haproxy_socket: ''
@@ -17,4 +19,4 @@
       when: ansible_os_family == 'Debian'
 
   roles:
-    - role_under_test
+    - role: geerlingguy.haproxy
