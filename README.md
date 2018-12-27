@@ -14,6 +14,12 @@ None.
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
+    haproxy_cfg_template: haproxy.cfg.j2
+
+Path to the custom haproxy template. If you put your custom template under the `templates` directory next to your playbook and use a relative path, use a different path than the default one, because ansible, when using relative path, use the first template found and look under the role directory at first then the playbook directory.
+
+### Default template variables
+
     haproxy_socket: /var/lib/haproxy/stats
 
 The socket through which HAProxy can communicate (for admin purposes or statistics). To disable/remove this directive, set `haproxy_socket: ''` (an empty string).
