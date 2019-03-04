@@ -20,8 +20,35 @@ haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
 haproxy_backend_servers: []
 # - name: app1
 #   address: 192.168.0.1:80
+#   cookie: Yes
+#   check: Yes
 # - name: app2
 #   address: 192.168.0.2:80
 
+# Multiple frontends.
+haproxy_frontends:
+  - name: '{{ haproxy_frontend_name }}'
+    bind_address: '{{ haproxy_frontend_bind_address }}'
+    bind_port: '{{ haproxy_frontend_port }}'
+    mode: '{{ haproxy_frontend_mode }}'
+    backend_name: '{{ haproxy_backend_name }}'
+    vars: []
+
+# Multiple backends.
+haproxy_backends:
+  - name: '{{ haproxy_backend_name }}'
+    mode: '{{ haproxy_backend_mode }}'
+    balance_method: '{{ haproxy_backend_balance_method }}'
+    options:
+      - 'httpchk: {{ haproxy_backend_httpchk }}'
+      - 'forwardfor'
+    cookie: 'SERVERID insert indirect'
+    servers: '{{ haproxy_backend_servers }}'
+
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []
+
+# Default options.
+haproxy_default_options:
+  - 'httplog'
+  - 'dontlognull'

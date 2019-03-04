@@ -52,6 +52,58 @@ A list of backend servers (name and address) to which HAProxy will distribute re
     haproxy_global_vars:
       - 'ssl-default-bind-ciphers ABCD+KLMJ:...'
       - 'ssl-default-bind-options no-sslv3'
+      
+A list of default options to use.
+
+    haproxy_default_options:
+      - 'httplog'
+      - 'dontlognull'
+
+### Specifying multiple frontends
+
+This role can also specify multiple frontends using the `haproxy_frontends` variable:
+
+    haproxy_frontends:
+      - name: 'hafrontend'
+        bind_address: '*'
+        bind_port: '80'
+        mode: 'http'
+        backend_name: 'habackend'
+        vars:
+          - 'reqadd X-Forwarded-Proto:\ http'
+      - name: 'hafrontend_ssl'
+        mode: 'http'
+        bind_address: '*'
+        bind_port: '443'
+        bind_cert_path: '/path/to/my/cert.pem'
+        backend_name: 'habackend'
+        vars:
+          - 'acl letsencrypt-acl path_beg /.well-known/acme-challenge/'
+          - 'reqadd X-Forwarded-Proto:\ https'
+          - 'use_backend letsencrypt-backend if letsencrypt-acl'
+      
+When using `haproxy_frontends` all `haproxy_frontend_*` variables are ignored.
+
+### Specifying multiple backends
+
+Likewise, you can also specify multiple backends using `haproxy_backends`:
+      
+    haproxy_backends:
+      - name: 'habackend'
+        mode: 'http'
+        servers:
+          - name: 'app1'
+            address: '123.123.123.123:80'
+            cookie: yes
+            check: yes
+      - name: 'letsencrypt-backend'
+        servers:
+          - name: 'letsencrypt'
+            address: '127.0.0.1:54321'  
+        
+When using `haproxy_backends` all `haproxy_backend_*` variables are ignored.
+
+### Other variables
 
 A list of extra global variables to add to the global configuration section inside `haproxy.cfg`.
 

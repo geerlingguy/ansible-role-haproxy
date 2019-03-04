@@ -17,16 +17,17 @@ global
 defaults
   log global
   mode  http
-  option  httplog
-  option  dontlognull
+{% for _default_option in haproxy_default_options %}
+  option  {{ _default_option }}
+{% endfor %}
 {% if haproxy_version == '1.4' %}
-        contimeout 5000
-        clitimeout 50000
-        srvtimeout 50000
+  contimeout 5000
+  clitimeout 50000
+  srvtimeout 50000
 {% else %}
-        timeout connect 5000
-        timeout client 50000
-        timeout server 50000
+  timeout connect 5000
+  timeout client 50000
+  timeout server 50000
 {% endif %}
 {% if ansible_os_family == 'Debian' %}
   errorfile 400 /etc/haproxy/errors/400.http
@@ -38,19 +39,32 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
-frontend {{ haproxy_frontend_name }}
-    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
-    mode {{ haproxy_frontend_mode }}
-    default_backend {{ haproxy_backend_name }}
+{% for _frontend in haproxy_frontends %}
+frontend {{ _frontend.name }}
+    bind {{ _frontend.bind_address }}:{{ _frontend.bind_port }} {% if _frontend.bind_cert_path | default(false) %}ssl cert {{ _frontend.bind_cert_path }}{% endif %} 
+    mode {{ _frontend.mode }}
+    default_backend {{ _frontend.backend_name }}
+{% for _frontend_var in (_frontend.vars | default([])) %}
+    {{ _frontend_var }}
+{% endfor %}
 
-backend {{ haproxy_backend_name }}
-    mode {{ haproxy_backend_mode }}
-    balance {{ haproxy_backend_balance_method }}
-    option forwardfor
-{% if haproxy_backend_httpchk != '' %}
-    option httpchk {{ haproxy_backend_httpchk }}
+{% endfor %}
+{% for _backend in haproxy_backends %}
+backend {{ _backend.name }}
+{% if _backend.mode | default(false) %}
+    mode {{ _backend.mode }}
 {% endif %}
-    cookie SERVERID insert indirect
-{% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
+{% if _backend.balance_method | default(false) %}
+    balance {{ _backend.balance_method }}
+{% endif %}
+{% for _option in (_backend.options | default([])) %}
+    option {{ _option }}
+{% endfor %}
+{% if _backend.cookie | default(false) %}
+    cookie {{ _backend.cookie }}
+{% endif %}
+{% for _backend_server in _backend.servers %}
+    server {{ _backend_server.name }} {{ _backend_server.address }} {% if _backend_server.cookie | default(false) %}cookie{% endif %} {% if _backend_server.check | default(false) %}{{ _backend_server.name }} check{% endif %} 
+{% endfor %}
+
 {% endfor %}
