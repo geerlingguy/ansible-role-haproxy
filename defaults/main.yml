@@ -40,7 +40,7 @@ haproxy_backends:
     mode: '{{ haproxy_backend_mode }}'
     balance_method: '{{ haproxy_backend_balance_method }}'
     options:
-      - 'httpchk: {{ haproxy_backend_httpchk }}'
+      - 'httpchk {{ haproxy_backend_httpchk }}'
       - 'forwardfor'
     cookie: 'SERVERID insert indirect'
     servers: '{{ haproxy_backend_servers }}'
