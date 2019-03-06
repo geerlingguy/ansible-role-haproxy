@@ -1,10 +1,10 @@
 global
   log /dev/log  local0
   log /dev/log  local1 notice
-{% if haproxy_socket | default(false) %}
+{% if haproxy_socket != '' %}
   stats socket {{ haproxy_socket }} level admin
 {% endif %}
-{% if haproxy_chroot | default(false) %}
+{% if haproxy_chroot != '' %}
   chroot {{ haproxy_chroot }}
 {% endif %}
   user {{ haproxy_user }}
