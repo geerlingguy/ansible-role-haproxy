@@ -4,7 +4,7 @@ dependencies: []
 galaxy_info:
   role_name: haproxy
   author: socketwench
-  description: HAProxy installation and configuration.
+  description: A fork of geerlingguy.haproxy supporting multiple frontends, backends, and TLS.
   license: "license (BSD, MIT)"
   min_ansible_version: 2.2
   platforms:
