@@ -2,9 +2,9 @@
 dependencies: []
 
 galaxy_info:
-  author: geerlingguy
+  role_name: haproxy
+  author: socketwench
   description: HAProxy installation and configuration.
-  company: "Midwestern Mac, LLC"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.2
   platforms:

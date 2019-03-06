@@ -1,8 +1,8 @@
 # Ansible Role: HAProxy
 
-[![Build Status](https://travis-ci.org/geerlingguy/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/geerlingguy/ansible-role-haproxy)
+[![Build Status](https://travis-ci.org/socketwench/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/socketwench/ansible-role-haproxy)
 
-Installs HAProxy on RedHat/CentOS and Debian/Ubuntu Linux servers.
+A fork of [geerlingguy.haproxy](https://galaxy.ansible.com/geerlingguy/haproxy), this role installs HAProxy on RedHat/CentOS and Debian/Ubuntu Linux servers. This fork supports multiple frontends, backends, and TLS.
 
 **Note**: This role _officially_ supports HAProxy versions 1.4 or 1.5. Future versions may require some rework.
 
@@ -52,7 +52,7 @@ A list of backend servers (name and address) to which HAProxy will distribute re
     haproxy_global_vars:
       - 'ssl-default-bind-ciphers ABCD+KLMJ:...'
       - 'ssl-default-bind-options no-sslv3'
-      
+
 A list of default options to use.
 
     haproxy_default_options:
@@ -81,13 +81,13 @@ This role can also specify multiple frontends using the `haproxy_frontends` vari
           - 'acl letsencrypt-acl path_beg /.well-known/acme-challenge/'
           - 'reqadd X-Forwarded-Proto:\ https'
           - 'use_backend letsencrypt-backend if letsencrypt-acl'
-      
+
 When using `haproxy_frontends` all `haproxy_frontend_*` variables are ignored.
 
 ### Specifying multiple backends
 
 Likewise, you can also specify multiple backends using `haproxy_backends`:
-      
+
     haproxy_backends:
       - name: 'habackend'
         mode: 'http'
@@ -100,7 +100,7 @@ Likewise, you can also specify multiple backends using `haproxy_backends`:
         servers:
           - name: 'letsencrypt'
             address: '127.0.0.1:54321'  
-        
+
 When using `haproxy_backends` all `haproxy_backend_*` variables are ignored.
 
 ### Other variables
@@ -116,7 +116,7 @@ None.
     - hosts: balancer
       sudo: yes
       roles:
-        - { role: geerlingguy.haproxy }
+        - { role: socketwench.haproxy }
 
 ## License
 
@@ -124,4 +124,4 @@ MIT / BSD
 
 ## Author Information
 
-This role was created in 2015 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
+This role was originally created in 2015 by [Jeff Geerling](https://www.jeffgeerling.com/), and forked by [socketwench](https://deninet.com/).
