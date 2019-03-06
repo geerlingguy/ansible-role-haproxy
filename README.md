@@ -41,9 +41,11 @@ HAProxy backend configuration directives.
 
     haproxy_backend_servers:
       - name: app1
-        address: 192.168.0.1:80
+        address: 192.168.0.1
+        port: 80
       - name: app2
-        address: 192.168.0.2:80
+        address: 192.168.0.2
+        port: 80
 
 A list of backend servers (name and address) to which HAProxy will distribute requests.
 
