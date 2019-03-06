@@ -16,10 +16,6 @@
   changed_when: false
   check_mode: false
 
-- name: Set HAProxy version.
-  set_fact:
-    haproxy_version: "{{ '1.5' if '1.5.' in haproxy_version_result.stdout else '1.4' }}"
-
 - name: Copy HAProxy configuration in place.
   template:
     src: haproxy.cfg.j2

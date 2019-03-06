@@ -4,8 +4,6 @@
 
 A fork of [geerlingguy.haproxy](https://galaxy.ansible.com/geerlingguy/haproxy), this role installs HAProxy on RedHat/CentOS and Debian/Ubuntu Linux servers. This fork supports multiple frontends, backends, and TLS.
 
-**Note**: This role _officially_ supports HAProxy versions 1.4 or 1.5. Future versions may require some rework.
-
 ## Requirements
 
 None.
