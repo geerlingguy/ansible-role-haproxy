@@ -35,7 +35,7 @@ defaults
 
 {% for _frontend in haproxy_frontends %}
 frontend {{ _frontend.name }}
-    bind {{ _frontend.bind_address }}:{{ _frontend.bind_port }} {% if _frontend.bind_cert_path | default(false) %}ssl cert {{ _frontend.bind_cert_path }}{% endif %}
+    bind {{ _frontend.bind_address }}:{{ _frontend.bind_port }} {% if _frontend.bind_cert_path | default(false) %}ssl cert {{ _frontend.bind_cert_path }} {% endif %}
     mode {{ _frontend.mode }}
     default_backend {{ _frontend.backend_name }}
 {% for _frontend_var in (_frontend.vars | default([])) %}
@@ -58,7 +58,7 @@ backend {{ _backend.name }}
     cookie {{ _backend.cookie }}
 {% endif %}
 {% for _backend_server in _backend.servers %}
-    server {{ _backend_server.name }} {{ _backend_server.address }} {% if _backend_server.cookie | default(false) %}cookie{% endif %} {% if _backend_server.check | default(false) %}{{ _backend_server.name }} check{% endif %}
+    server {{ _backend_server.name }} {{ _backend_server.address }} {% if _backend_server.cookie | default(false) %}cookie{% endif %} {% if _backend_server.check | default(false) %}{{ _backend_server.name }} check {% endif %}
 {% endfor %}
 
 {% endfor %}
