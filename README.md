@@ -91,13 +91,17 @@ Likewise, you can also specify multiple backends using `haproxy_backends`:
         mode: 'http'
         servers:
           - name: 'app1'
-            address: '123.123.123.123:80'
-            cookie: yes
-            check: yes
+            address: '123.123.123.123'
+            port: '80'
+            params:
+              - 'cookie'
+              - 'app1'
+              - 'check'
       - name: 'letsencrypt-backend'
         servers:
           - name: 'letsencrypt'
-            address: '127.0.0.1:54321'  
+            address: '127.0.0.1'
+            port: '54321'  
 
 When using `haproxy_backends` all `haproxy_backend_*` variables are ignored.
 

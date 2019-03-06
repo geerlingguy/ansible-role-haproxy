@@ -20,6 +20,7 @@ haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
 haproxy_backend_servers: []
 # - name: app1
 #   address: 192.168.0.1:80
+#   port: 80
 #   cookie: Yes
 #   check: Yes
 # - name: app2

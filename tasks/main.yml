@@ -22,6 +22,7 @@
     dest: /etc/haproxy/haproxy.cfg
     mode: 0644
     validate: haproxy -f %s -c -q
+    backup: yes
   notify: restart haproxy
 
 - name: Ensure HAProxy is started and enabled on boot.

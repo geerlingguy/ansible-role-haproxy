@@ -19,4 +19,4 @@
       when: ansible_os_family == 'Debian'
 
   roles:
-    - role: geerlingguy.haproxy
+    - role: socketwench.haproxy
