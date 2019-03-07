@@ -1,8 +1,18 @@
 ---
+# Global settings
 haproxy_socket: /var/lib/haproxy/stats
 haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
+haproxy_run_as_daemon: true
+
+# Extra global vars (see README for example usage).
+haproxy_global_vars: []
+
+# Default options.
+haproxy_default_options:
+  - 'httplog'
+  - 'dontlognull'
 
 # Frontend settings.
 haproxy_frontend_name: 'hafrontend'
@@ -45,11 +55,3 @@ haproxy_backends:
       - 'forwardfor'
     cookie: 'SERVERID insert indirect'
     servers: '{{ haproxy_backend_servers }}'
-
-# Extra global vars (see README for example usage).
-haproxy_global_vars: []
-
-# Default options.
-haproxy_default_options:
-  - 'httplog'
-  - 'dontlognull'

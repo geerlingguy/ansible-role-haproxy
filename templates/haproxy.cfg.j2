@@ -9,7 +9,9 @@ global
 {% endif %}
   user {{ haproxy_user }}
   group {{ haproxy_group }}
+{% if haproxy_run_as_daemon | default(true) %}
   daemon
+{% endif %}
 {% for global_var in haproxy_global_vars %}
   {{ global_var }}
 {% endfor %}
