@@ -16,7 +16,3 @@ def test_haproxy_running_and_enabled(host):
     haproxy = host.service("haproxy")
     assert haproxy.is_running
     assert haproxy.is_enabled
-
-
-def test_check_http_port(host):
-    assert host.socket("tcp://:::80").is_listening
