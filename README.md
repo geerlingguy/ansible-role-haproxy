@@ -55,6 +55,14 @@ A list of backend servers (name and address) to which HAProxy will distribute re
 
 A list of extra global variables to add to the global configuration section inside `haproxy.cfg`.
 
+    haproxy_config_template: "haproxy.cfg.j2" 
+
+The `haproxy.cfg.j2` template packaged with this role is meant to be very generic and serve a variety of use cases. However, many people would like to have a much more customized version, and so you can override this role's default template with your own, adding any additional customizations you need. To do this:
+
+  - Create a `templates` directory at the same level as your playbook.
+  - Create a `templates\myhaproxy.cfg.j2` file (just choose a different name from the default template).
+  - Set the variable like: `haproxy_config_template: myhaproxy.cfg.j2` (with the name of your custom template).
+
 ## Dependencies
 
 None.

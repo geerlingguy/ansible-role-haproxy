@@ -25,3 +25,6 @@ haproxy_backend_servers: []
 
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []
+
+#Customized haproxy config template
+haproxy_config_template: "haproxy.cfg.j2"
