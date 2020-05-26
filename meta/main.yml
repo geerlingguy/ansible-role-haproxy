@@ -2,6 +2,7 @@
 dependencies: []
 
 galaxy_info:
+  role_name: haproxy
   author: geerlingguy
   description: HAProxy installation and configuration.
   company: "Midwestern Mac, LLC"
