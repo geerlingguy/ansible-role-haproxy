@@ -28,5 +28,12 @@
     validate: haproxy -f %s -c -q
   notify: restart haproxy
 
+- name: Open firewall ports for HAProxy
+  firewalld:
+    service: http
+    state: enabled
+    immediate: true
+    permanent: true
+
 - name: Ensure HAProxy is started and enabled on boot.
   service: name=haproxy state=started enabled=yes
