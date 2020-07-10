@@ -30,7 +30,7 @@
 
 - name: Open firewall ports for HAProxy
   firewalld:
-    service: http
+    service: "{{ haproxy_frontend_mode }}"
     state: enabled
     immediate: true
     permanent: true
