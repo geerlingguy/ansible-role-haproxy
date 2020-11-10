@@ -55,6 +55,10 @@ A list of backend servers (name and address) to which HAProxy will distribute re
 
 A list of extra global variables to add to the global configuration section inside `haproxy.cfg`.
 
+    haproxy_custom_config_template: 'haproxy.cfg.j2'
+
+Specify your own `haproxy.cfg` template file.
+
 ## Dependencies
 
 None.
