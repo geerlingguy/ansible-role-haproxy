@@ -1,0 +1,25 @@
+---
+- name: Create HAProxy directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
+    mode: 0644
+  loop:
+    - /etc/haproxy
+    - "{{ haproxy_chroot }}"
+
+- name: Get HAProxy version.
+  command: haproxy -v
+  register: haproxy_version_result
+  changed_when: false
+  check_mode: false
+
+- name: Copy HAProxy configuration in place.
+  template:
+    src: "{{ haproxy_custom_config_template | default('haproxy.cfg.j2') }}"
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: restart haproxy

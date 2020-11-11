@@ -19,15 +19,10 @@ defaults
   mode  http
   option  httplog
   option  dontlognull
-{% if haproxy_version == '1.4' %}
-        contimeout 5000
-        clitimeout 50000
-        srvtimeout 50000
-{% else %}
-        timeout connect 5000
-        timeout client 50000
-        timeout server 50000
-{% endif %}
+  timeout connect 5000
+  timeout client 50000
+  timeout server 50000
+
 {% if ansible_os_family == 'Debian' %}
   errorfile 400 /etc/haproxy/errors/400.http
   errorfile 403 /etc/haproxy/errors/403.http

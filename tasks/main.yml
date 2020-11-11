@@ -1,6 +1,23 @@
 ---
+# This is here only for retrocompatibility.
 - name: Ensure HAProxy is installed.
-  package: name=haproxy state=present
+  package:
+    name: haproxy
+    state: present
+  when: haproxy_version is version('2.0.0', '<')
+
+- name: Ensure group "haproxy" exists
+  group:
+    name: "{{ haproxy_group }}"
+    state: present
+- name: Ensure user "haproxy" exists
+  user:
+    name: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
+
+- name: Ensure HAProxy is installed
+  include_tasks: install_v2.yml
+  when: haproxy_version is version('2.0.0', '>=')
 
 - name: Ensure HAProxy is enabled (so init script will start it on Debian).
   lineinfile:
@@ -10,23 +27,11 @@
     state: present
   when: ansible_os_family == 'Debian'
 
-- name: Get HAProxy version.
-  command: haproxy -v
-  register: haproxy_version_result
-  changed_when: false
-  check_mode: false
-
-- name: Set HAProxy version.
-  set_fact:
-    haproxy_version: "{{ '1.5' if '1.5.' in haproxy_version_result.stdout else '1.4' }}"
-
-- name: Copy HAProxy configuration in place.
-  template:
-    src: "{{ haproxy_custom_config_template | default('haproxy.cfg.j2') }}"
-    dest: /etc/haproxy/haproxy.cfg
-    mode: 0644
-    validate: haproxy -f %s -c -q
-  notify: restart haproxy
+- name: Ensure HAProxy is configured
+  include_tasks: config.yml
 
 - name: Ensure HAProxy is started and enabled on boot.
-  service: name=haproxy state=started enabled=yes
+  service:
+    name: haproxy
+    state: started
+    enabled: true
