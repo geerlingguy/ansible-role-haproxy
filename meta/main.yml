@@ -3,9 +3,9 @@ dependencies: []
 
 galaxy_info:
   role_name: haproxy
-  author: geerlingguy
+  author: Lucas Maurice (Sonic)
   description: HAProxy installation and configuration.
-  company: "Midwestern Mac, LLC"
+  company: "JusteReseau"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.2
   platforms:
