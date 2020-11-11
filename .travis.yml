@@ -7,9 +7,10 @@ env:
     - ROLE_NAME: haproxy
   matrix:
     - MOLECULE_DISTRO: centos7
-    - MOLECULE_DISTRO: centos6
-    - MOLECULE_DISTRO: ubuntu1804
+    - MOLECULE_DISTRO: centos8
     - MOLECULE_DISTRO: ubuntu1604
+    - MOLECULE_DISTRO: ubuntu1804
+    - MOLECULE_DISTRO: ubuntu2004
 
 before_install:
   # Upgrade Docker to work with docker-py.
@@ -22,8 +23,8 @@ install:
 before_script:
   # Use actual Ansible Galaxy role name for the project directory.
   - cd ../
-  - mv ansible-role-$ROLE_NAME geerlingguy.$ROLE_NAME
-  - cd geerlingguy.$ROLE_NAME
+  - mv ansible-role-$ROLE_NAME justereseau.$ROLE_NAME
+  - cd justereseau.$ROLE_NAME
 
 script:
   # Run tests.
