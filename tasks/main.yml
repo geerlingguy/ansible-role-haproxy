@@ -6,6 +6,9 @@
     state: present
   when: haproxy_version is version('2.0.0', '<')
 
+- name: Import vars
+  include_vars: "{{ ansible_os_family }}.yml"
+
 - name: Ensure group "haproxy" exists
   group:
     name: "{{ haproxy_group }}"
@@ -19,18 +22,11 @@
   include_tasks: install_v2.yml
   when: haproxy_version is version('2.0.0', '>=')
 
-- name: Ensure HAProxy is enabled (so init script will start it on Debian).
-  lineinfile:
-    dest: /etc/default/haproxy
-    regexp: "^ENABLED.+$"
-    line: "ENABLED=1"
-    state: present
-  when: ansible_os_family == 'Debian'
-
 - name: Ensure HAProxy is configured
   include_tasks: config.yml
 
 - name: Ensure HAProxy is started and enabled on boot.
+  tags: notest
   service:
     name: haproxy
     state: started

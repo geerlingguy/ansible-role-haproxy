@@ -21,12 +21,7 @@
 
 - name: Install requirements
   package:
-    name:
-      - gcc
-      - pcre-devel
-      - tar
-      - make
-      - openssl-devel
+    name: "{{ haproxy_packages_requirements }}"
     state: present
 
 - name: Install the good version if it was not
@@ -52,29 +47,27 @@
     - name: Compile HAProxy
       make:
         chdir: "{{ temp_installation_dir.path }}/haproxy-{{ haproxy_version }}"
-        params:
-          TARGET: linux-glibc
-          USE_PCRE: 1
-          USE_OPENSSL: 1
-          USE_ZLIB: 1
-          USE_CRYPT_H: 1
-          USE_LIBCRYPT: 1
+        params: "{{ haproxy_compilation_params }}"
 
     - name: Install HAProxy
       make:
         chdir: "{{ temp_installation_dir.path }}/haproxy-{{ haproxy_version }}"
         target: install
 
-    - name: Add HAProxy service
+    - name: Add HAProxy service - RedHat Family
       copy:
         src: "{{ temp_installation_dir.path }}/haproxy-{{ haproxy_version }}/examples/haproxy.init"
         remote_src: true
         dest: /etc/init.d/haproxy
         mode: '0755'
+      when: ansible_os_family == 'RedHat'
 
-    - name: Ensure HAProxy service is enabled
-      service:
-        daemon_reload: true
+    - name: Add HAProxy service - Debian Family
+      template:
+        src: haproxy.service.j2
+        dest: /lib/systemd/system/haproxy.service
+        mode: '0755'
+      when: ansible_os_family == 'Debian'
 
   when: (haproxy_installed_version_result.failed) or
         (haproxy_installed_version is version(haproxy_version, '<'))
@@ -84,3 +77,9 @@
     src: /usr/local/sbin/haproxy
     dest: /usr/sbin/haproxy
     state: link
+
+- name: Ensure HAProxy service is loadded
+  service:
+    name: haproxy
+    enabled: true
+    daemon_reload: true

@@ -10,12 +10,6 @@
     - /etc/haproxy
     - "{{ haproxy_chroot }}"
 
-- name: Get HAProxy version.
-  command: haproxy -v
-  register: haproxy_version_result
-  changed_when: false
-  check_mode: false
-
 - name: Copy HAProxy configuration in place.
   template:
     src: "{{ haproxy_custom_config_template | default('haproxy.cfg.j2') }}"
