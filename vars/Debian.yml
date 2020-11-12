@@ -1,0 +1,16 @@
+---
+haproxy_packages_requirements:
+  - gcc
+  - libpcre3-dev
+  - libsystemd-dev
+  - libz-dev
+  - tar
+  - make
+  - libssl-dev
+
+haproxy_compilation_params:
+  TARGET: linux-glibc
+  USE_OPENSSL: 1
+  USE_ZLIB: 1
+  USE_PCRE: 1
+  USE_SYSTEMD: 1

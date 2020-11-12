@@ -1,0 +1,85 @@
+---
+- name: Get HAProxy version.
+  command: haproxy -v
+  register: haproxy_installed_version_result
+  ignore_errors: true
+  changed_when: false
+  check_mode: false
+
+- name: Extract installed version
+  set_fact:
+    haproxy_installed_version: '{{ haproxy_installed_version_result.stdout | regex_search("\d+(\.\d+)+") }}'
+  when: not haproxy_installed_version_result.failed
+
+- name: Remove older than 2.0 versions.
+  package:
+    name: haproxy
+    state: absent
+  when:
+    - not haproxy_installed_version_result.failed
+    - haproxy_installed_version is version('2.0.0', '<')
+
+- name: Install requirements
+  package:
+    name: "{{ haproxy_packages_requirements }}"
+    state: present
+
+- name: Install the good version if it was not
+  block:
+    - name: Create temporary installation directory
+      tempfile:
+        state: directory
+        suffix: installation
+      register: temp_installation_dir
+
+    - name: Download HAProxy Archive
+      get_url:
+        url: >-
+          https://www.haproxy.org/download/{{ haproxy_version | regex_search("\d+\.\d+") }}/src/haproxy-{{ haproxy_version }}.tar.gz
+        dest: "{{ temp_installation_dir.path }}/haproxy.tar.gz"
+
+    - name: Unarchive HAProxy Archive
+      unarchive:
+        src: "{{ temp_installation_dir.path }}/haproxy.tar.gz"
+        dest: "{{ temp_installation_dir.path }}"
+        remote_src: true
+
+    - name: Compile HAProxy
+      make:
+        chdir: "{{ temp_installation_dir.path }}/haproxy-{{ haproxy_version }}"
+        params: "{{ haproxy_compilation_params }}"
+
+    - name: Install HAProxy
+      make:
+        chdir: "{{ temp_installation_dir.path }}/haproxy-{{ haproxy_version }}"
+        target: install
+
+    - name: Add HAProxy service - RedHat Family
+      copy:
+        src: "{{ temp_installation_dir.path }}/haproxy-{{ haproxy_version }}/examples/haproxy.init"
+        remote_src: true
+        dest: /etc/init.d/haproxy
+        mode: '0755'
+      when: ansible_os_family == 'RedHat'
+
+    - name: Add HAProxy service - Debian Family
+      template:
+        src: haproxy.service.j2
+        dest: /lib/systemd/system/haproxy.service
+        mode: '0755'
+      when: ansible_os_family == 'Debian'
+
+  when: (haproxy_installed_version_result.failed) or
+        (haproxy_installed_version is version(haproxy_version, '<'))
+
+- name: Create a symbolic link
+  file:
+    src: /usr/local/sbin/haproxy
+    dest: /usr/sbin/haproxy
+    state: link
+
+- name: Ensure HAProxy service is loadded
+  service:
+    name: haproxy
+    enabled: true
+    daemon_reload: true

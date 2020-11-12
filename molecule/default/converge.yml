@@ -4,8 +4,6 @@
   become: true
 
   vars:
-    haproxy_socket: ''
-    haproxy_chroot: ''
     haproxy_user: root
     haproxy_group: root
 
@@ -18,5 +16,12 @@
       apt: update_cache=yes cache_valid_time=600
       when: ansible_os_family == 'Debian'
 
+    - name: Enable networking
+      copy:
+        dest: "/etc/sysconfig/network"
+        content: NETWORKING=yes
+        mode: 0644
+      when: ansible_os_family == 'RedHat'
+
   roles:
-    - role: geerlingguy.haproxy
+    - role: justereseau.haproxy
