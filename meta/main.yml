@@ -13,11 +13,11 @@ galaxy_info:
       versions:
         - 7
         - 8
-    - name: Ubuntu
+    - name: Debian
       versions:
-        - precise
-        - trusty
-        - xenial
+        - jessie
+        - stretch
+        - buster
   galaxy_tags:
     - web
     - networking

@@ -1,10 +1,12 @@
 # Ansible Role: HAProxy
 
-[![Build Status](https://travis-ci.org/geerlingguy/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/geerlingguy/ansible-role-haproxy)
+[![Build Status](https://travis-ci.org/justereseau/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/justereseau/ansible-role-haproxy)
 
-Installs HAProxy on RedHat/CentOS and Debian/Ubuntu Linux servers.
+Installs HAProxy on RedHat/CentOS and Debian/Ubuntu Linux servers, but Molecule say not. So RIP Molecule...
 
-**Note**: This role _officially_ supports HAProxy versions 1.4 or 1.5. Future versions may require some rework.
+**Note**: This role _officially_ supports HAProxy versions 1.x and 2.x.
+
+**Note 2**: We highly recommand to build your own `haproxy.cfg` by adapting it to your needs.
 
 ## Requirements
 
@@ -13,6 +15,10 @@ None.
 ## Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
+
+    haproxy_version: 2.2.5
+
+The HAProxy version to install. If < 2.0.0, the latest 1.x.x availlable in the packet manager will be installed. If >=2.0.0, it will be built from HAProxy source.
 
     haproxy_socket: /var/lib/haproxy/stats
 
@@ -76,4 +82,6 @@ MIT / BSD
 
 ## Author Information
 
-This role was created in 2015 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
+This role was a fork of the one created in 2015 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
+
+This role was edited by [Lucas Maurice (Sonic)](lmaurice@justereseau.ca), member of [JusteReseau](https://justereseau.ca/)
