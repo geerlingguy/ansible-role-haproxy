@@ -39,7 +39,8 @@
 
     - name: Download HAProxy Archive
       get_url:
-        url: "https://www.haproxy.org/download/2.0/src/haproxy-{{ haproxy_version }}.tar.gz"
+        url: >-
+          https://www.haproxy.org/download/{{ haproxy_version | regex_search("\d+\.\d+") }}/src/haproxy-{{ haproxy_version }}.tar.gz
         dest: "{{ temp_installation_dir.path }}/haproxy.tar.gz"
 
     - name: Unarchive HAProxy Archive
