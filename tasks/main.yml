@@ -28,7 +28,7 @@
     validate: haproxy -f %s -c -q
   notify: restart haproxy
 
-- name: Ensure HAProxy is started and enabled on boot.
+- name: Ensure HAProxy is started and possibly enabled on boot.
   service:
     name: haproxy
     state: started
