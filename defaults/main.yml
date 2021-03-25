@@ -25,3 +25,8 @@ haproxy_backend_servers: []
 
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []
+
+# Default haproxy timeouts
+haproxy_connect_timeout: 5000
+haproxy_client_timeout: 50000
+haproxy_server_timeout: 50000
