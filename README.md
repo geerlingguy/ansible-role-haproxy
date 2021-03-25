@@ -49,6 +49,12 @@ HAProxy backend configuration directives.
 
 A list of backend servers (name and address) to which HAProxy will distribute requests.
 
+    haproxy_connect_timeout: 5000
+    haproxy_client_timeout: 50000
+    haproxy_server_timeout: 50000
+
+HAProxy default timeout configurations.
+
     haproxy_global_vars:
       - 'ssl-default-bind-ciphers ABCD+KLMJ:...'
       - 'ssl-default-bind-options no-sslv3'
