@@ -2,7 +2,13 @@ global
   log /dev/log  local0
   log /dev/log  local1 notice
 {% if haproxy_socket != '' %}
-  stats socket {{ haproxy_socket }} level admin
+  stats socket {{ haproxy_socket }} mode {{ haproxy_socket_mode }} level {{ haproxy_socket_level }}
+  {%- if haproxy_socket_user is defined or haproxy_socket_group is defined or haproxy_socket_uid is defined or haproxy_socket_gid is defined %} user{% endif %}
+  {%- if haproxy_socket_user is defined %} {{ haproxy_socket_user }}{% endif %}
+  {%- if haproxy_socket_group is defined %} group {{ haproxy_socket_group }}{% endif %}
+  {%- if haproxy_socket_uid is defined %} uid {{ haproxy_socket_uid }}{% endif %}
+  {%- if haproxy_socket_gid is defined %} gid {{ haproxy_socket_gid }}{% endif %}
+
 {% endif %}
 {% if haproxy_chroot != '' %}
   chroot {{ haproxy_chroot }}

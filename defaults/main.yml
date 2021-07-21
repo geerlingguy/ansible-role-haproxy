@@ -1,5 +1,7 @@
 ---
 haproxy_socket: /var/lib/haproxy/stats
+haproxy_socket_mode: 755
+haproxy_socket_level: admin
 haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
