@@ -2,7 +2,11 @@ global
   log /dev/log  local0
   log /dev/log  local1 notice
 {% if haproxy_socket != '' %}
+ {% if haproxy_version == '1.4' %}
   stats socket {{ haproxy_socket }} level admin
+ {% else %}
+  stats socket {{ haproxy_socket }} mode 660 level admin expose-fd listeners
+ {% endif %}
 {% endif %}
 {% if haproxy_chroot != '' %}
   chroot {{ haproxy_chroot }}
