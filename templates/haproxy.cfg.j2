@@ -1,8 +1,9 @@
 global
-  log /dev/log  local0
-  log /dev/log  local1 notice
+{% for logline in haproxy_log %}
+  log {{ logline }}
+{% endfor %}
 {% if haproxy_socket != '' %}
-  stats socket {{ haproxy_socket }} level admin
+  stats socket {{ haproxy_socket }} level {{ haproxy_socket_level }} {{ haproxy_socket_params }}
 {% endif %}
 {% if haproxy_chroot != '' %}
   chroot {{ haproxy_chroot }}
@@ -15,20 +16,19 @@ global
 {% endfor %}
 
 defaults
-  log global
-  mode  http
-  option  httplog
-  option  dontlognull
+{% for haproxy_default in haproxy_defaults %}
+  {{ haproxy_default }}
+{% endfor %}
 {% if haproxy_version is version('1.4', '<=') %}
-        contimeout {{ haproxy_connect_timeout }}
-        clitimeout {{ haproxy_client_timeout }}
-        srvtimeout {{ haproxy_server_timeout }}
+  contimeout {{ haproxy_connect_timeout }}
+  clitimeout {{ haproxy_client_timeout }}
+  srvtimeout {{ haproxy_server_timeout }}
 {% else %}
-        timeout connect {{ haproxy_connect_timeout }}
-        timeout client {{ haproxy_client_timeout }}
-        timeout server {{ haproxy_server_timeout }}
+  timeout connect {{ haproxy_connect_timeout }}
+  timeout client {{ haproxy_client_timeout }}
+  timeout server {{ haproxy_server_timeout }}
 {% endif %}
-{% if ansible_os_family == 'Debian' %}
+{% if ansible_os_family == 'Debian' and 'mode http' in haproxy_defaults %}
   errorfile 400 /etc/haproxy/errors/400.http
   errorfile 403 /etc/haproxy/errors/403.http
   errorfile 408 /etc/haproxy/errors/408.http
@@ -39,18 +39,26 @@ defaults
 {% endif %}
 
 frontend {{ haproxy_frontend_name }}
-    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
-    mode {{ haproxy_frontend_mode }}
-    default_backend {{ haproxy_backend_name }}
+  bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
+  mode {{ haproxy_frontend_mode }}
+  default_backend {{ haproxy_backend_name }}
+{% for haproxy_frontend_option in haproxy_frontend_options %}
+  {{ haproxy_frontend_option }}
+{% endfor %}
 
 backend {{ haproxy_backend_name }}
-    mode {{ haproxy_backend_mode }}
-    balance {{ haproxy_backend_balance_method }}
-    option forwardfor
+  mode {{ haproxy_backend_mode }}
+  balance {{ haproxy_backend_balance_method }}
+{% for haproxy_backend_option in haproxy_backend_options %}
+  {{ haproxy_backend_option }}
+{% endfor %}
 {% if haproxy_backend_httpchk != '' %}
-    option httpchk {{ haproxy_backend_httpchk }}
+  option httpchk {{ haproxy_backend_httpchk }}
 {% endif %}
-    cookie SERVERID insert indirect
 {% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
+{% if haproxy_backend_mode == 'http' %}
+  server {{ backend.name }} {{ backend.address }} {{ backend.params|default('cookie '+backend.name+' check') }}
+{% else %}
+  server {{ backend.name }} {{ backend.address }} {{ backend.params|default('') }}
+{% endif %}
 {% endfor %}

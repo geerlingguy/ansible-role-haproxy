@@ -1,20 +1,40 @@
 ---
+# global
+haproxy_log:
+  - "/dev/log  local0"
+  - "/dev/log  local1 notice"
+
 haproxy_socket: /var/lib/haproxy/stats
+haproxy_socket_level: admin  # use one of admin, operator or user
+haproxy_socket_params: ''
 haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
+
+# Extra global vars (see README for example usage).
+haproxy_global_vars: []
 
 # Frontend settings.
 haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
 haproxy_frontend_port: 80
 haproxy_frontend_mode: 'http'
+# extra frontend options
+haproxy_frontend_options: []
+# example:
+# haproxy_frontend_options:
+#   - description front
+#   - option tcplog
 
 # Backend settings.
 haproxy_backend_name: 'habackend'
 haproxy_backend_mode: 'http'
 haproxy_backend_balance_method: 'roundrobin'
 haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
+# extra backend options
+haproxy_backend_options:
+  - cookie SERVERID insert indirect
+  - option forwardfor
 
 # List of backend servers.
 haproxy_backend_servers: []
@@ -22,9 +42,14 @@ haproxy_backend_servers: []
 #   address: 192.168.0.1:80
 # - name: app2
 #   address: 192.168.0.2:80
+#   params: maxconn 32 check
 
-# Extra global vars (see README for example usage).
-haproxy_global_vars: []
+# default
+haproxy_defaults:
+  - log global
+  - mode http
+  - option httplog
+  - option dontlognull
 
 # Default haproxy timeouts
 haproxy_connect_timeout: 5000
