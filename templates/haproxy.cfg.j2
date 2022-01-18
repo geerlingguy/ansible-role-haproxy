@@ -19,7 +19,7 @@ defaults
   mode  http
   option  httplog
   option  dontlognull
-{% if haproxy_version == '1.4' %}
+{% if haproxy_version is version('1.4', '<=') %}
         contimeout {{ haproxy_connect_timeout }}
         clitimeout {{ haproxy_client_timeout }}
         srvtimeout {{ haproxy_server_timeout }}

@@ -18,7 +18,7 @@
 
 - name: Set HAProxy version.
   set_fact:
-    haproxy_version: "{{ '1.5' if '1.5.' in haproxy_version_result.stdout else '1.4' }}"
+    haproxy_version: '{{ haproxy_version_result.stdout_lines[0] | regex_replace("^HA-Proxy version ([0-9]\.[0-9]).*$", "\1") }}'
 
 - name: Copy HAProxy configuration in place.
   template:
