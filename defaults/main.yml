@@ -14,7 +14,7 @@ haproxy_group: haproxy
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []
 
-# Frontend settings.
+# Frontend settings. - Deprecated! Use haproxy_frontend service list
 haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
 haproxy_frontend_port: 80
@@ -26,7 +26,36 @@ haproxy_frontend_options: []
 #   - description front
 #   - option tcplog
 
-# Backend settings.
+# issue a warning if old vars are set
+deprecate_old_haproxy_vars: false
+
+# set this to true in order to completely ignore the old settings
+ignore_old_haproxy_vars: false
+
+# define defaults values for all haproxy_frontend services
+haproxy_frontend_defaults:
+  bind_address: '*'
+  mode: 'http'
+
+# list of frontend services
+# each service must have name, bind_address and port defined,
+# all other settings are optional and can contain strings or lists of strings
+haproxy_frontends: []
+# example:
+# haproxy_frontend:
+#   - name: httplb
+#     port: 80
+#     mode: http
+#     bind_address: '*'
+#   - name: httpslb
+#     port: 443
+#     default_backend: habackend
+#     description: front of front
+#     option:
+#       - tcplog
+#     ...
+
+# Backend settings. Deprecated! Use haproxy_backend service list
 haproxy_backend_name: 'habackend'
 haproxy_backend_mode: 'http'
 haproxy_backend_balance_method: 'roundrobin'
@@ -43,6 +72,29 @@ haproxy_backend_servers: []
 # - name: app2
 #   address: 192.168.0.2:80
 #   params: maxconn 32 check
+
+# define defaults values for all haproxy_backend services
+haproxy_backend_defaults:
+  mode: http
+  balance_method: 'roundrobin'
+
+# list of backend services
+haproxy_backends: []
+# example
+# haproxy_backends:
+#   - name: http_backend
+#     mode: http
+#     balance_method: 'roundrobin'
+#     httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
+#     options:
+#       - cookie SERVERID insert indirect
+#       - option forwardfor
+#     servers:
+#       - name: app1
+#         address: 192.168.0.1:80
+#       - name: app2
+#         address: 192.168.0.2:80
+#         params: maxconn 32 check
 
 # default
 haproxy_defaults:

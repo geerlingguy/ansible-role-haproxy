@@ -38,6 +38,7 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
+{% if not ignore_old_haproxy_vars %}
 frontend {{ haproxy_frontend_name }}
   bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
   mode {{ haproxy_frontend_mode }}
@@ -45,7 +46,25 @@ frontend {{ haproxy_frontend_name }}
 {% for haproxy_frontend_option in haproxy_frontend_options %}
   {{ haproxy_frontend_option }}
 {% endfor %}
+{% endif -%} {# end if not ignore_old_haproxy_vars #}
 
+{% for frontend in haproxy_frontends %}
+frontend {{ frontend.name }}
+  bind {{ frontend.bind_address }}:{{ frontend.port }}
+  {% for k, v in (haproxy_frontend_defaults | combine(frontend, recursive=true)).items() | list %}
+  {% if k not in ['name', 'bind_address', 'port',] %}
+  {% if v is string %}
+  {{ k }} {{ v }}
+  {% elif v is iterable %}
+  {% for le in v %}
+  {{ k }} {{ le }}
+  {% endfor -%}
+  {% endif -%} {# end if v is string #}
+  {% endif -%} {# end if k not in ... #}
+  {% endfor -%} {# end for k, v in frontend ... #}
+{% endfor -%} {# end for frontend in haproxy_frontends #}
+
+{% if not ignore_old_haproxy_vars %}
 backend {{ haproxy_backend_name }}
   mode {{ haproxy_backend_mode }}
   balance {{ haproxy_backend_balance_method }}
@@ -62,3 +81,24 @@ backend {{ haproxy_backend_name }}
   server {{ backend.name }} {{ backend.address }} {{ backend.params|default('') }}
 {% endif %}
 {% endfor %}
+{% endif -%} {# end if not ignore_old_haproxy_vars #}
+
+{% for backend in haproxy_backends %}
+backend {{ backend.name }}
+  {% for k, v in (haproxy_backend_defaults | combine(backend, recursive=true)).items() | list %}
+  {% if k not in ['name', 'servers', ] %}
+  {% if v is string %}
+  {{ k }} {{ v }}
+  {% elif v is iterable %}
+  {% for le in v %}
+  {{ k }} {{ le }}
+  {% endfor -%}
+  {% endif -%} {# end if v is string #}
+  {% endif -%} {# end if k not in ... #}
+  {% if k == 'servers' %}
+  {% for backendserver in v %}
+  server {{ backendserver.name }} {{ backendserver.address }} {{ backendserver.params|default('') }}
+  {% endfor -%} {# end for backendserver in v #}
+  {% endif -%} {# end if k == 'servers' #}
+  {% endfor -%} {# end for k, v in backend ... #}
+{% endfor -%} {# end for backend in haproxy_backends #}
