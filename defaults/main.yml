@@ -14,6 +14,12 @@ haproxy_group: haproxy
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []
 
+# issue a warning if old vars are set
+deprecate_old_haproxy_vars: false
+
+# set this to true in order to completely ignore the old settings
+ignore_old_haproxy_vars: false
+
 # Frontend settings. - Deprecated! Use haproxy_frontend service list
 haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
@@ -25,12 +31,6 @@ haproxy_frontend_options: []
 # haproxy_frontend_options:
 #   - description front
 #   - option tcplog
-
-# issue a warning if old vars are set
-deprecate_old_haproxy_vars: false
-
-# set this to true in order to completely ignore the old settings
-ignore_old_haproxy_vars: false
 
 # define defaults values for all haproxy_frontend services
 haproxy_frontend_defaults:
@@ -65,7 +65,7 @@ haproxy_backend_options:
   - cookie SERVERID insert indirect
   - option forwardfor
 
-# List of backend servers.
+# List of backend servers. Deprecated! Use servers section in haproxy_backend service list
 haproxy_backend_servers: []
 # - name: app1
 #   address: 192.168.0.1:80
@@ -76,7 +76,7 @@ haproxy_backend_servers: []
 # define defaults values for all haproxy_backend services
 haproxy_backend_defaults:
   mode: http
-  balance_method: 'roundrobin'
+  balance: 'roundrobin'
 
 # list of backend services
 haproxy_backends: []
@@ -84,11 +84,11 @@ haproxy_backends: []
 # haproxy_backends:
 #   - name: http_backend
 #     mode: http
-#     balance_method: 'roundrobin'
-#     httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
-#     options:
-#       - cookie SERVERID insert indirect
-#       - option forwardfor
+#     balance: 'roundrobin'
+#     cookie: SERVERID insert indirect
+#     option:
+#       - forwardfor
+#       - httpchk 'HEAD / HTTP/1.1\r\nHost:localhost'
 #     servers:
 #       - name: app1
 #         address: 192.168.0.1:80

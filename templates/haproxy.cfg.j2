@@ -1,3 +1,6 @@
+#jinja2: lstrip_blocks: True
+# {{ ansible_managed }}
+
 global
 {% for logline in haproxy_log %}
   log {{ logline }}
@@ -45,12 +48,12 @@ frontend {{ haproxy_frontend_name }}
   default_backend {{ haproxy_backend_name }}
 {% for haproxy_frontend_option in haproxy_frontend_options %}
   {{ haproxy_frontend_option }}
-{% endfor %}
+{% endfor -%}
 {% endif -%} {# end if not ignore_old_haproxy_vars #}
 
 {% for frontend in haproxy_frontends %}
 frontend {{ frontend.name }}
-  bind {{ frontend.bind_address }}:{{ frontend.port }}
+  bind {{ frontend.bind_address | default(haproxy_frontend_defaults.bind_address) }}:{{ frontend.port | default(haproxy_frontend_defaults.port) }}
   {% for k, v in (haproxy_frontend_defaults | combine(frontend, recursive=true)).items() | list %}
   {% if k not in ['name', 'bind_address', 'port',] %}
   {% if v is string %}
@@ -70,17 +73,17 @@ backend {{ haproxy_backend_name }}
   balance {{ haproxy_backend_balance_method }}
 {% for haproxy_backend_option in haproxy_backend_options %}
   {{ haproxy_backend_option }}
-{% endfor %}
+{% endfor -%}
 {% if haproxy_backend_httpchk != '' %}
   option httpchk {{ haproxy_backend_httpchk }}
-{% endif %}
+{% endif -%}
 {% for backend in haproxy_backend_servers %}
 {% if haproxy_backend_mode == 'http' %}
   server {{ backend.name }} {{ backend.address }} {{ backend.params|default('cookie '+backend.name+' check') }}
-{% else %}
+{% else -%}
   server {{ backend.name }} {{ backend.address }} {{ backend.params|default('') }}
-{% endif %}
-{% endfor %}
+{% endif -%}
+{% endfor -%}
 {% endif -%} {# end if not ignore_old_haproxy_vars #}
 
 {% for backend in haproxy_backends %}
