@@ -1,5 +1,5 @@
 # Ansible Role: HAProxy
-
+![stand with Ukraine](https://badgen.net/badge/stand%20with/UKRAINE/?color=0057B8&labelColor=FFD700)
 [![CI](https://github.com/geerlingguy/ansible-role-haproxy/workflows/CI/badge.svg?event=push)](https://github.com/geerlingguy/ansible-role-haproxy/actions?query=workflow%3ACI)
 
 Installs HAProxy on RedHat/CentOS and Debian/Ubuntu Linux servers.
