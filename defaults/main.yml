@@ -16,6 +16,9 @@ haproxy_global_vars: []
 
 # issue a warning if old vars are set
 deprecate_old_haproxy_vars: false
+# if deprecate_old_haproxy_vars is enabled
+# just warn if old vars are set, otherwise fail
+warn_on_old_haproxy_vars: true
 
 # set this to true in order to completely ignore the old settings
 ignore_old_haproxy_vars: false

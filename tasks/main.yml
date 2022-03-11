@@ -20,6 +20,26 @@
   set_fact:
     haproxy_version: '{{ haproxy_version_result.stdout_lines[0] | regex_replace("^HA-Proxy version ([0-9]\.[0-9]).*$", "\1") }}'
 
+- name: check deprecated vars
+  fail:
+    msg: "detected deprecated var {{ item }}"
+  ignore_errors: "{{ warn_on_old_haproxy_vars }}"
+  when:
+    - deprecate_old_haproxy_vars
+    - item in hostvars[inventory_hostname]
+  with_items:
+    - haproxy_frontend_name
+    - haproxy_frontend_bind_address
+    - haproxy_frontend_port
+    - haproxy_frontend_mode
+    - haproxy_frontend_options
+    - haproxy_backend_name
+    - haproxy_backend_mode
+    - haproxy_backend_balance_method
+    - haproxy_backend_httpchk
+    - haproxy_backend_options
+    - haproxy_backend_servers
+
 - name: Copy HAProxy configuration in place.
   template:
     src: haproxy.cfg.j2
