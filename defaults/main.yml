@@ -10,6 +10,7 @@ haproxy_frontends: #[]
     haproxy_frontend_bind_address: '*'
     haproxy_frontend_port: 80
     haproxy_frontend_mode: 'http'
+    haproxy_default_backend_name: 'habackend'
 
 # Backend settings.
 haproxy_backends: #[]
