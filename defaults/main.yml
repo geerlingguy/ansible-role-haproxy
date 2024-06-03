@@ -30,3 +30,5 @@ haproxy_global_vars: []
 haproxy_connect_timeout: 5000
 haproxy_client_timeout: 50000
 haproxy_server_timeout: 50000
+
+haproxy_template: "haproxy.cfg.j2"
