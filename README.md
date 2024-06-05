@@ -61,6 +61,17 @@ HAProxy default timeout configurations.
 
 A list of extra global variables to add to the global configuration section inside `haproxy.cfg`.
 
+## Not happy with the packaged haproxy.cfg.j2 template? Make your own !
+
+The haproxy.cfg.j2 template packaged with this role may not allow you to make all needed configurations.
+Allowing to set every posisble haproxy.cfg in there.
+
+If the default template does not suit your needs, you can replace it with yours. What you need to do:
+* create a `templates` directory at the same level as your playbook
+* create a `templates\haproxy.cfg.j2` file (just choose a different name from the default template)
+* in your playbook set the var `haproxy_template: haproxy.cfg.j2`
+
+
 ## Dependencies
 
 None.
