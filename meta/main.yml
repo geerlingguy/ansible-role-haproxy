@@ -3,9 +3,9 @@ dependencies: []
 
 galaxy_info:
   role_name: haproxy
-  author: geerlingguy
+  author: evolic
   description: HAProxy installation and configuration.
-  company: "Midwestern Mac, LLC"
+  company: "Loculus Evolution"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.10
   platforms:
