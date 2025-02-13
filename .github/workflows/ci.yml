@@ -10,7 +10,7 @@ name: CI
 
 defaults:
   run:
-    working-directory: 'geerlingguy.haproxy'
+    working-directory: 'evolic.haproxy'
 
 jobs:
 
@@ -21,7 +21,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v4
         with:
-          path: 'geerlingguy.haproxy'
+          path: 'evolic.haproxy'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
@@ -41,14 +41,14 @@ jobs:
     strategy:
       matrix:
         distro:
-          - rockylinux9
+          - rockylinux8
           - ubuntu2004
 
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v4
         with:
-          path: 'geerlingguy.haproxy'
+          path: 'evolic.haproxy'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5

@@ -1,56 +1,74 @@
 global
-  log /dev/log  local0
-  log /dev/log  local1 notice
-{% if haproxy_socket != '' %}
-  stats socket {{ haproxy_socket }} level admin
-{% endif %}
-{% if haproxy_chroot != '' %}
-  chroot {{ haproxy_chroot }}
-{% endif %}
-  user {{ haproxy_user }}
-  group {{ haproxy_group }}
-  daemon
-{% for global_var in haproxy_global_vars %}
-  {{ global_var }}
-{% endfor %}
+    log /dev/log  local0
+    log /dev/log  local1 notice
+
+    {% if haproxy_socket != '' %}
+      stats socket {{ haproxy_socket }} level admin
+    {% endif %}
+
+    {% if haproxy_chroot != '' %}
+      chroot {{ haproxy_chroot }}
+    {% endif %}
+
+    user {{ haproxy_user }}
+    group {{ haproxy_group }}
+    daemon
+
+    {% for global_var in haproxy_global_vars %}
+      {{ global_var }}
+    {% endfor %}
 
 defaults
-  log global
-  mode  http
-  option  httplog
-  option  dontlognull
-{% if haproxy_version is version('1.4', '<=') %}
-        contimeout {{ haproxy_connect_timeout }}
-        clitimeout {{ haproxy_client_timeout }}
-        srvtimeout {{ haproxy_server_timeout }}
-{% else %}
-        timeout connect {{ haproxy_connect_timeout }}
-        timeout client {{ haproxy_client_timeout }}
-        timeout server {{ haproxy_server_timeout }}
-{% endif %}
-{% if ansible_os_family == 'Debian' %}
-  errorfile 400 /etc/haproxy/errors/400.http
-  errorfile 403 /etc/haproxy/errors/403.http
-  errorfile 408 /etc/haproxy/errors/408.http
-  errorfile 500 /etc/haproxy/errors/500.http
-  errorfile 502 /etc/haproxy/errors/502.http
-  errorfile 503 /etc/haproxy/errors/503.http
-  errorfile 504 /etc/haproxy/errors/504.http
-{% endif %}
+    log global
+    mode  http
+    option  httplog
+    option  dontlognull
 
-frontend {{ haproxy_frontend_name }}
-    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
-    mode {{ haproxy_frontend_mode }}
-    default_backend {{ haproxy_backend_name }}
+    {% if haproxy_version is version('1.4', '<=') %}
+            contimeout {{ haproxy_connect_timeout }}
+            clitimeout {{ haproxy_client_timeout }}
+            srvtimeout {{ haproxy_server_timeout }}
+    {% else %}
+            timeout connect {{ haproxy_connect_timeout }}
+            timeout client {{ haproxy_client_timeout }}
+            timeout server {{ haproxy_server_timeout }}
+    {% endif %}
 
-backend {{ haproxy_backend_name }}
-    mode {{ haproxy_backend_mode }}
+    {% if ansible_os_family == 'Debian' %}
+        errorfile 400 /etc/haproxy/errors/400.http
+        errorfile 403 /etc/haproxy/errors/403.http
+        errorfile 408 /etc/haproxy/errors/408.http
+        errorfile 500 /etc/haproxy/errors/500.http
+        errorfile 502 /etc/haproxy/errors/502.http
+        errorfile 503 /etc/haproxy/errors/503.http
+        errorfile 504 /etc/haproxy/errors/504.http
+    {% endif %}
+
+frontend http
+    bind :80
+    mode http
+    default_backend {{ haproxy_default_backend_name }}
+
+    # Place for all the ACL's
+    {% for frontend in haproxy_frontends %}
+    acl {{ frontend.name }} hdr(host) req_ssl_sni -i {{ frontend.address }}
+    # acl {{ frontend.name }} hdr(host) req_ssl_sni -i {{ frontend.address }}:443
+    use_backend {{ frontend.backend }} if {{ frontend.name }}
+
+    {% endfor %}
+
+# Place for all the backends
+{% for backend in haproxy_backend_servers %}
+backend {{ backend.name }}
+    mode http
     balance {{ haproxy_backend_balance_method }}
     option forwardfor
-{% if haproxy_backend_httpchk != '' %}
+
+    {% if haproxy_backend_httpchk != '' %}
     option httpchk {{ haproxy_backend_httpchk }}
-{% endif %}
-    cookie SERVERID insert indirect
-{% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
+    {% endif %}
+
+    {% for server in backend.servers %}
+    server {{ server.name }} {{ server.address }} cookie {{ server.name }} {{ server.options }}
+    {% endfor %}
 {% endfor %}

@@ -4,24 +4,40 @@ haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
 
-# Frontend settings.
-haproxy_frontend_name: 'hafrontend'
-haproxy_frontend_bind_address: '*'
-haproxy_frontend_port: 80
-haproxy_frontend_mode: 'http'
-
 # Backend settings.
-haproxy_backend_name: 'habackend'
-haproxy_backend_mode: 'http'
 haproxy_backend_balance_method: 'roundrobin'
 haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
 
-# List of backend servers.
-haproxy_backend_servers: []
-# - name: app1
-#   address: 192.168.0.1:80
-# - name: app2
-#   address: 192.168.0.2:80
+# ########################################################## #
+# # Below are the default settings for the HAProxy config. # #
+# ########################################################## #
+
+haproxy_frontends:
+  - name: nginx_host
+    address: nginx.loc
+    backend: nginx_backend
+  - name: grafana_host
+    address: grafana.example.io
+    backend: grafana_backend
+
+haproxy_backend_servers:
+  - name: nginx_backend
+    servers:
+      - name: nginx_backend_1
+        address: 192.168.1.11:8080
+        options: 'check fall 3 rise 2'
+      - name: nginx_backend_2
+        address: 192.168.1.12:8080
+        options: 'check fall 3 rise 2'
+  - name: grafana_backend
+    servers:
+      - name: grafana_backend_1
+        address: localhost:3000
+        options: 'check cookie fall 3 rise 2'
+
+haproxy_default_backend_name: nginx_backend
+
+# ########################################################## #
 
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []
