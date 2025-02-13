@@ -1,7 +1,7 @@
 ---
 - name: Converge
   hosts: all
-  #become: true
+  become: true
 
   vars:
     haproxy_socket: ''
@@ -9,9 +9,19 @@
     haproxy_user: root
     haproxy_group: root
 
+    haproxy_frontends:
+      - name: nginx_host
+        address: nginx.loc
+        backend: nginx_backend
+
     haproxy_backend_servers:
-      - name: app1
-        address: 127.0.0.1:8080
+      - name: nginx_backend
+        servers:
+          - name: nginx_backend_1
+            address: 127.0.0.1:8080
+            options: 'check fall 3 rise 2'
+
+    haproxy_default_backend_name: nginx_backend
 
   pre_tasks:
     - name: Update apt cache.
@@ -19,4 +29,4 @@
       when: ansible_os_family == 'Debian'
 
   roles:
-    - role: geerlingguy.haproxy
+    - role: evolic.haproxy

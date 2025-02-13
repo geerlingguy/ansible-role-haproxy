@@ -1,6 +1,6 @@
 # Ansible Role: HAProxy
 
-[![CI](https://github.com/geerlingguy/ansible-role-haproxy/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-haproxy/actions/workflows/ci.yml)
+[![CI](https://github.com/geerlingguy/ansible-role-haproxy/workflows/CI/badge.svg?event=push)](https://github.com/geerlingguy/ansible-role-haproxy/actions?query=workflow%3ACI)
 
 Installs HAProxy on RedHat/CentOS and Debian/Ubuntu Linux servers.
 
@@ -34,32 +34,27 @@ haproxy_group: haproxy
 The user and group under which HAProxy should run. Only change this if you know what you're doing!
 
 ```yaml
-haproxy_frontend_name: 'hafrontend'
-haproxy_frontend_bind_address: '*'
-haproxy_frontend_port: 80
-haproxy_frontend_mode: 'http'
+haproxy_frontends:
+  - name: nginx_host
+    address: nginx.loc
+    backend: nginx_backend
 ```
 
 HAProxy frontend configuration directives.
 
 ```yaml
-haproxy_backend_name: 'habackend'
-haproxy_backend_mode: 'http'
-haproxy_backend_balance_method: 'roundrobin'
-haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
-```
-
-HAProxy backend configuration directives.
-
-```yaml
 haproxy_backend_servers:
-  - name: app1
-    address: 192.168.0.1:80
-  - name: app2
-    address: 192.168.0.2:80
+  - name: nginx_backend
+    servers:
+      - name: nginx_backend_1
+        address: 192.168.1.11:8080
+        options: 'check fall 3 rise 2'
+      - name: nginx_backend_2
+        address: 192.168.1.12:8080
+        options: 'check fall 3 rise 2'
 ```
 
-A list of backend servers (name and address) to which HAProxy will distribute requests.
+HAProxy backend configuration directives with a list of backend servers (name and address) to which HAProxy will distribute requests.
 
 ```yaml
 haproxy_connect_timeout: 5000
@@ -93,7 +88,7 @@ None.
 - hosts: balancer
   sudo: yes
   roles:
-    - { role: geerlingguy.haproxy }
+    - { role: evolic.haproxy }
 ```
 
 ## License
@@ -102,4 +97,4 @@ MIT / BSD
 
 ## Author Information
 
-This role was created in 2015 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
+This role was created in 2015 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/) and extended by Tomasz Kuter in 2025 to handle multiple frontends and backends.
