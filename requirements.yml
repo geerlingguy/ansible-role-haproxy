@@ -1,4 +1,0 @@
----
-roles:
-  - src: https://galaxy.ansible.com/evolic/haproxy
-    name: evolic.haproxy
