@@ -1,5 +1,6 @@
 ---
 haproxy_socket: /var/lib/haproxy/stats
+haproxy_socket_mode: '660'
 haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy

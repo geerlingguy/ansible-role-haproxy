@@ -2,7 +2,7 @@ global
   log /dev/log  local0
   log /dev/log  local1 notice
 {% if haproxy_socket != '' %}
-  stats socket {{ haproxy_socket }} level admin
+  stats socket {{ haproxy_socket }} mode {{ haproxy_socket_mode }} level admin
 {% endif %}
 {% if haproxy_chroot != '' %}
   chroot {{ haproxy_chroot }}
