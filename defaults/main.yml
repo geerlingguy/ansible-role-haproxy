@@ -4,6 +4,9 @@ haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
 
+haproxy_ca_base: /etc/ssl/certs
+haproxy_crt_base: /etc/ssl/private
+
 # Frontend settings.
 haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
