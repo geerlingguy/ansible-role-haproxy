@@ -7,6 +7,11 @@ haproxy_group: haproxy
 haproxy_ca_base: /etc/ssl/certs
 haproxy_crt_base: /etc/ssl/private
 
+# Default settings.
+haproxy_default_options:
+  - 'option  httplog'
+  - 'option  dontlognull'
+
 # Frontend settings.
 haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
