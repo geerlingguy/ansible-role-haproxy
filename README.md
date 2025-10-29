@@ -34,6 +34,22 @@ haproxy_group: haproxy
 The user and group under which HAProxy should run. Only change this if you know what you're doing!
 
 ```yaml
+haproxy_ca_base: /etc/ssl/certs
+haproxy_crt_base: /etc/ssl/private
+```
+
+Assigns a default directory to fetch SSL CA certificates and SSL certificates.
+
+```yaml
+haproxy_default_log_format: ''
+haproxy_default_options:
+  - 'option  httplog'
+  - 'option  dontlognull'
+```
+
+HAProxy default configuration directives.
+
+```yaml
 haproxy_frontend_name: 'hafrontend'
 haproxy_frontend_bind_address: '*'
 haproxy_frontend_port: 80
@@ -47,6 +63,8 @@ haproxy_backend_name: 'habackend'
 haproxy_backend_mode: 'http'
 haproxy_backend_balance_method: 'roundrobin'
 haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
+haproxy_backend_cookie_insert: true
+haproxy_backend_default_server: ''
 ```
 
 HAProxy backend configuration directives.
@@ -68,6 +86,15 @@ haproxy_server_timeout: 50000
 ```
 
 HAProxy default timeout configurations.
+
+```yaml
+haproxy_prometheus_metrics: false
+haproxy_prometheus_metrics_bind_address: '*'
+haproxy_prometheus_metrics_port: 8405
+haproxy_prometheus_metrics_path: /metrics
+```
+
+HAProxy prometheus-exporter configuration directives.
 
 ```yaml
 haproxy_global_vars:

@@ -59,14 +59,14 @@ backend {{ haproxy_backend_name }}
 {% if haproxy_backend_httpchk != '' %}
     option httpchk {{ haproxy_backend_httpchk }}
 {% endif %}
-{% if haproxy_backend_cookie_instert %}
+{% if haproxy_backend_cookie_insert %}
     cookie SERVERID insert indirect
 {% endif %}
 {% if haproxy_backend_default_server != '' %}
     default-server {{ haproxy_backend_default_server }}
 {% endif %}
 {% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} {% if haproxy_backend_cookie_instert %}cookie {{ backend.name }}{% endif %} check
+    server {{ backend.name }} {{ backend.address }} {% if haproxy_backend_cookie_insert %}cookie {{ backend.name }}{% endif %} check
 {% endfor %}
 
 {% if haproxy_prometheus_metrics %}
