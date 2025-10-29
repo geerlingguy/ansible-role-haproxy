@@ -27,13 +27,13 @@ defaults
   {{ default_option }}
 {% endfor %}
 {% if haproxy_version is version('1.4', '<=') %}
-        contimeout {{ haproxy_connect_timeout }}
-        clitimeout {{ haproxy_client_timeout }}
-        srvtimeout {{ haproxy_server_timeout }}
+  contimeout {{ haproxy_connect_timeout }}
+  clitimeout {{ haproxy_client_timeout }}
+  srvtimeout {{ haproxy_server_timeout }}
 {% else %}
-        timeout connect {{ haproxy_connect_timeout }}
-        timeout client {{ haproxy_client_timeout }}
-        timeout server {{ haproxy_server_timeout }}
+  timeout connect {{ haproxy_connect_timeout }}
+  timeout client {{ haproxy_client_timeout }}
+  timeout server {{ haproxy_server_timeout }}
 {% endif %}
 {% if ansible_os_family == 'Debian' %}
   errorfile 400 /etc/haproxy/errors/400.http
@@ -53,7 +53,9 @@ frontend {{ haproxy_frontend_name }}
 backend {{ haproxy_backend_name }}
     mode {{ haproxy_backend_mode }}
     balance {{ haproxy_backend_balance_method }}
+{% if haproxy_backend_mode == 'http' %}
     option forwardfor
+{% endif %}
 {% if haproxy_backend_httpchk != '' %}
     option httpchk {{ haproxy_backend_httpchk }}
 {% endif %}
@@ -66,3 +68,12 @@ backend {{ haproxy_backend_name }}
 {% for backend in haproxy_backend_servers %}
     server {{ backend.name }} {{ backend.address }} {% if haproxy_backend_cookie_instert %}cookie {{ backend.name }}{% endif %} check
 {% endfor %}
+
+{% if haproxy_prometheus_metrics %}
+frontend prometheus
+  bind {{ haproxy_prometheus_metrics_bind_address }}:{{ haproxy_prometheus_metrics_port }}
+  mode http
+  stats enable
+  http-request use-service prometheus-exporter if { path {{ haproxy_prometheus_metrics_path }} }
+  no log
+{% endif %}
