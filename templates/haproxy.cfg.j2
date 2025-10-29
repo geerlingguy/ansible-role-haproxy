@@ -57,6 +57,9 @@ backend {{ haproxy_backend_name }}
 {% if haproxy_backend_cookie_instert %}
     cookie SERVERID insert indirect
 {% endif %}
+{% if haproxy_backend_default_server != '' %}
+    default-server {{ haproxy_backend_default_server }}
+{% endif %}
 {% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} {% if haproxy_backend_cookie_instert %}cookie{% endif %} {{ backend.name }} check
+    server {{ backend.name }} {{ backend.address }} {% if haproxy_backend_cookie_instert %}cookie {{ backend.name }}{% endif %} check
 {% endfor %}
