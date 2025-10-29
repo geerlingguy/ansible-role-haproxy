@@ -9,6 +9,7 @@ haproxy_ca_base: /etc/ssl/certs
 haproxy_crt_base: /etc/ssl/private
 
 # Default settings.
+haproxy_default_log_format: ''
 haproxy_default_options:
   - 'option  httplog'
   - 'option  dontlognull'

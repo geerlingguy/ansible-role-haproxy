@@ -19,6 +19,9 @@ global
 
 defaults
   log global
+{% if haproxy_default_log_format != '' %}
+  log-format {{ haproxy_default_log_format }}
+{% endif %}
   mode  http
 {% for default_option in haproxy_default_options %}
   {{ default_option }}
