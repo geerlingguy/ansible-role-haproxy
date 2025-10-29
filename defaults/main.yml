@@ -48,3 +48,5 @@ haproxy_prometheus_metrics: false
 haproxy_prometheus_metrics_bind_address: '*'
 haproxy_prometheus_metrics_port: 8405
 haproxy_prometheus_metrics_path: /metrics
+
+haproxy_template: "haproxy.cfg.j2"
