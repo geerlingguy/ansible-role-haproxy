@@ -1,8 +1,18 @@
 ---
 haproxy_socket: /var/lib/haproxy/stats
+haproxy_socket_mode: '660'
 haproxy_chroot: /var/lib/haproxy
 haproxy_user: haproxy
 haproxy_group: haproxy
+
+haproxy_ca_base: /etc/ssl/certs
+haproxy_crt_base: /etc/ssl/private
+
+# Default settings.
+haproxy_default_log_format: ''
+haproxy_default_options:
+  - 'option  httplog'
+  - 'option  dontlognull'
 
 # Frontend settings.
 haproxy_frontend_name: 'hafrontend'
@@ -15,6 +25,8 @@ haproxy_backend_name: 'habackend'
 haproxy_backend_mode: 'http'
 haproxy_backend_balance_method: 'roundrobin'
 haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'
+haproxy_backend_cookie_insert: true
+haproxy_backend_default_server: ''
 
 # List of backend servers.
 haproxy_backend_servers: []
@@ -30,5 +42,11 @@ haproxy_global_vars: []
 haproxy_connect_timeout: 5000
 haproxy_client_timeout: 50000
 haproxy_server_timeout: 50000
+
+# HAProxy prometheus setup
+haproxy_prometheus_metrics: false
+haproxy_prometheus_metrics_bind_address: '*'
+haproxy_prometheus_metrics_port: 8405
+haproxy_prometheus_metrics_path: /metrics
 
 haproxy_template: "haproxy.cfg.j2"
