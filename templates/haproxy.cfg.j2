@@ -28,7 +28,7 @@ defaults
         timeout client {{ haproxy_client_timeout }}
         timeout server {{ haproxy_server_timeout }}
 {% endif %}
-{% if ansible_os_family == 'Debian' %}
+{% if ansible_facts.os_family == 'Debian' %}
   errorfile 400 /etc/haproxy/errors/400.http
   errorfile 403 /etc/haproxy/errors/403.http
   errorfile 408 /etc/haproxy/errors/408.http
