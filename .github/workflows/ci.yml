@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         distro:
-          - rockylinux10
+          - rockylinux9
           - ubuntu2404
 
     steps:
