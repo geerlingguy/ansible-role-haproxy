@@ -2,7 +2,7 @@ global
   log /dev/log  local0
   log /dev/log  local1 notice
 {% if haproxy_socket != '' %}
-  stats socket {{ haproxy_socket }} level admin
+  stats socket {{ haproxy_socket }} mode {{ haproxy_socket_mode }} level admin
 {% endif %}
 {% if haproxy_chroot != '' %}
   chroot {{ haproxy_chroot }}
@@ -10,23 +10,30 @@ global
   user {{ haproxy_user }}
   group {{ haproxy_group }}
   daemon
+
+  ca-base {{ haproxy_ca_base }}
+  crt-base {{ haproxy_crt_base }}
 {% for global_var in haproxy_global_vars %}
   {{ global_var }}
 {% endfor %}
 
 defaults
   log global
+{% if haproxy_default_log_format != '' %}
+  log-format {{ haproxy_default_log_format }}
+{% endif %}
   mode  http
-  option  httplog
-  option  dontlognull
+{% for default_option in haproxy_default_options %}
+  {{ default_option }}
+{% endfor %}
 {% if haproxy_version is version('1.4', '<=') %}
-        contimeout {{ haproxy_connect_timeout }}
-        clitimeout {{ haproxy_client_timeout }}
-        srvtimeout {{ haproxy_server_timeout }}
+  contimeout {{ haproxy_connect_timeout }}
+  clitimeout {{ haproxy_client_timeout }}
+  srvtimeout {{ haproxy_server_timeout }}
 {% else %}
-        timeout connect {{ haproxy_connect_timeout }}
-        timeout client {{ haproxy_client_timeout }}
-        timeout server {{ haproxy_server_timeout }}
+  timeout connect {{ haproxy_connect_timeout }}
+  timeout client {{ haproxy_client_timeout }}
+  timeout server {{ haproxy_server_timeout }}
 {% endif %}
 {% if ansible_facts.os_family == 'Debian' %}
   errorfile 400 /etc/haproxy/errors/400.http
@@ -46,11 +53,27 @@ frontend {{ haproxy_frontend_name }}
 backend {{ haproxy_backend_name }}
     mode {{ haproxy_backend_mode }}
     balance {{ haproxy_backend_balance_method }}
+{% if haproxy_backend_mode == 'http' %}
     option forwardfor
+{% endif %}
 {% if haproxy_backend_httpchk != '' %}
     option httpchk {{ haproxy_backend_httpchk }}
 {% endif %}
+{% if haproxy_backend_cookie_insert %}
     cookie SERVERID insert indirect
+{% endif %}
+{% if haproxy_backend_default_server != '' %}
+    default-server {{ haproxy_backend_default_server }}
+{% endif %}
 {% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
+    server {{ backend.name }} {{ backend.address }} {% if haproxy_backend_cookie_insert %}cookie {{ backend.name }}{% endif %} check
 {% endfor %}
+
+{% if haproxy_prometheus_metrics %}
+frontend prometheus
+  bind {{ haproxy_prometheus_metrics_bind_address }}:{{ haproxy_prometheus_metrics_port }}
+  mode http
+  stats enable
+  http-request use-service prometheus-exporter if { path {{ haproxy_prometheus_metrics_path }} }
+  no log
+{% endif %}
